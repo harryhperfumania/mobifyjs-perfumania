@@ -1,0 +1,35 @@
+.m-accordion {
+    @include kill-list;
+    margin: $margin 0;
+    // list-style: none;
+}
+.m-accordion li {
+    // margin: 0;
+    // list-style: none;
+}
+.m-accordion .m-content {
+    // -webkit-transition: max-height 0.5s ease;
+    // -moz-transition: max-height 0.5s ease;
+    // -o-transition: max-height 0.5s ease;
+    // transition: max-height 0.5s ease;
+    @include transition(max-height 0.5s ease);
+    overflow: hidden;
+    max-height: 0;
+}
+.m-accordion .m-opened .m-content {
+    max-height: 10000px;
+}
+
+// .m-accordion .m-active .m-content {
+//     max-height: 10000px; /* IE hack */
+// }
+
+.m-accordion .m-header {
+    position: relative;
+    z-index: 1;
+    pointer-events: cursor; /* For iOS */
+}
+
+.m-accordion .m-header > a {
+    pointer-events: none;   
+}

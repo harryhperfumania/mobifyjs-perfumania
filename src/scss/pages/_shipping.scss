@@ -1,0 +1,25 @@
+.x-shipping {
+	.x-shipping-methods ul {
+		@include kill-list;
+		margin-bottom: $block-margin;
+		border: solid 1px $borderxblock;
+
+		li {
+			border-bottom: solid 1px $border;
+			padding: $margin/4 $margin $margin/4 $margin*4;
+			&:last-child {
+				border-bottom: none;
+			}
+
+			input[type=radio] {
+				float: left;
+				margin-left: -$margin*3;
+				margin-top: $margin+1;
+			}
+			label {
+				color: $dark;
+				line-height: 1.3;
+			}
+		}
+	}
+}

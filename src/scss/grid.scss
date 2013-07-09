@@ -1,0 +1,138 @@
+@import "modules/reset"; // This clears all styles for elements
+@import "modules/normalize"; // This readds styling for page elements and normalizes them across browsers (git.io/normalize)
+
+@import "modules/grid"; // Modules used on the site
+
+
+// NEUTRAL COLOURS
+    $xdark: #222;   // the darkest neutral colour
+    $dark: #555;    // a dark neutral colour
+    $med: #999;     // the mid-tone neutral colour
+    $light: #DDD;   // a light neutral colour
+    $xlight: #EEE;  // the lighest neutral colour
+
+    // LIGHT GRADIENT
+    @mixin light-gradient {
+        @include background-image(linear-gradient(white, $light));
+        border-style: solid;
+        border-color: $border;
+    }
+    // DARK GRADIENT
+    @mixin dark-gradient {
+        @include background-image(linear-gradient($dark, $xdark));
+        border-style: solid;
+        border-color: $xdark;
+    }
+
+    // BRAND
+    $brand: #ed145b;            // the main colour from the company's brand
+        $light-brand: #f5989d;  // secondary of the brand colour
+        $dark-brand: #9e0039;   // secondary of the brand colour
+
+    // BRAND GRADIENT
+    @mixin brand-gradient {
+        @include background-image(linear-gradient($brand, $dark-brand));
+        border-style: solid;
+        border-color: $dark-brand;
+    }
+
+    // ACCENT
+    $accent: #1cbbb4;           // the accent colour (if there is one)
+        $light-accent: #9bece8; // secondary of accent colour
+        $dark-accent: #008b81;  // secondary of accent colour
+
+    // ACCENT GRADIENT
+    @mixin accent-gradient {
+        @include background-image(linear-gradient($accent, $dark-accent));
+        border-style: solid;
+        border-color: $dark-accent;
+    }
+
+    // BORDERS
+    $border: #CCC;
+
+// ==========================================================================
+// MARGINS + TEXT
+// ==========================================================================
+
+    $margin: 10px; // use multipliers to scale
+    // ex:  padding: $margin*2;
+    //      padding: $margin/2;
+
+    $rounded: 3px; // rounded corners
+    // ex:  @include border-radius($rounded);
+
+    $line: 1.5;
+    $text: 13px; // Default
+        $xsmall-text: 10px;
+        $small-text: 11px;
+        $large-text: 16px;
+        $xlarge-text: 18px;
+
+    // Default fonts (override if desired)
+    $font: "Arial", "Droid Sans", sans-serif;
+    $font-serif: "Georgia", "Droid Serif", serif;
+
+// ==========================================================================
+// MIXINS
+// ==========================================================================
+
+
+
+// ==========================================================================
+// GENERAL
+// ==========================================================================
+
+*   {
+    @include box-sizing(border-box);
+}
+html    {
+    -webkit-text-size-adjust: none;
+}
+html.x-android {
+    text-rendering: auto;
+}
+body    {
+    font-family: $font;
+    font-size: $text;
+    line-height: $line;
+    color: $xdark;
+}
+#x-main {
+    position: relative;
+    padding: $margin;
+}
+
+// ===========================
+//  BUTTONS
+// ===========================
+
+.x-button-container {
+    text-align: center;
+
+    padding: 10px;
+
+    button {
+        margin: 10px;
+    }
+}
+
+
+// ===========================
+//  GRID SETUP
+// ===========================
+
+#x-grid {
+    
+    &.x-23 {
+        @include grid23;
+    }
+
+    &.x-34 {
+        @include grid34;
+    }
+
+    li {
+        padding: 10px 0;
+    }
+}

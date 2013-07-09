@@ -1,0 +1,44 @@
+.x-breadcrumbs {
+	ul {
+		@include kill-list;
+		margin:0;
+		li {
+			display: inline-block;
+			&:after {
+				padding-left: $margin/2;
+				padding-right: 0;
+				color: lighten($med, 10%);
+				top: -1px;
+				position: relative;
+				font-size: 0.75em;
+				@include x-icon-arrowright;
+			}
+			&:last-of-type:after {
+				display: none;
+			}
+
+			a,
+			span {
+				color:$med;
+				font-weight: bold;
+				text-transform: capitalize;
+			}
+		}
+	}
+
+	& + hr {
+		// proper inherit of -5px side margins
+		margin-top:$margin;
+		margin-bottom:$margin*1.5;
+		
+	}
+
+
+	// Single h1 title can bee styled as breadcrumb (e.g. Login pages)
+	h1 {
+		margin:0;
+		color:$med;
+		font-size: $text;
+		font-weight: normal;
+	}
+}

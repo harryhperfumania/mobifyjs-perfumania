@@ -1,0 +1,57 @@
+{>root/}
+
+{<main}
+	{#content}
+		{title}
+
+		<div id="paymentMethodForm"> {! Required by desktop scripts !}
+			{error}
+			{giftCard}
+
+			{form|openTag|s}
+				{hidedenFields}
+				
+				{form|innerHTML|s}
+
+				{submitButton}
+				{backButton}
+
+				{?cartSummary}
+					{>_cartSummary/}
+				{/cartSummary}
+
+				{?itemsList}
+					{>_cartItems/}
+				{/itemsList}
+
+				{#shippingMethod}
+					{>_staticBlock/}
+				{/shippingMethod}
+				
+				{#address}
+					{>_cartAddress/}
+				{/address}
+
+				{submitButton}
+				{backButton}
+
+				{assistance}
+
+			{form|closeTag|s}
+		</div>
+
+		<hr/>
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+	{%script}
+	 	(function($) {
+	 		$('#paymentForm #cancelAddEdit a.button').on('click', function(){
+	 			window.scrollTo(0, $('#x-main').offset().top);
+	 		});
+	 	})(Mobify.$);
+	{/script}
+{/scripts}

@@ -1,0 +1,389 @@
+// ==========================================================================
+// CSS FILE FOR STYLEGUIDE ONLY
+// do not alter for project
+// ==========================================================================
+//
+// Reset and Normalize Styles - LEAVE THESE AT TOP
+
+@import "modules/reset"; // This clears all styles for elements
+@import "modules/normalize"; // This readds styling for page elements and normalizes them across browsers (git.io/normalize)
+
+// Icon Fonts - These have to load before everything else
+@import "modules/iconfont";
+@import "modules/fontcustom";
+
+// Custom Styles for this project
+
+@import "defaults"; // Sitewide defaults
+@import "modules"; // Modules used on the site
+@import "pages"; // Page specific styles
+
+// ==========================================================================
+// COLOURS
+// ==========================================================================
+
+#colors {
+	div, span {
+		padding: $margin/2 $margin;
+		margin: 0;
+		background: $xlight;
+		text-align: center;
+	}
+	div {
+		margin-top: $margin;
+
+		&.gradient {
+			margin: 0;
+		}
+	}
+	span {
+		display: inline-block;
+		width: 20%;
+		margin-right: -4px;
+	}
+	div + span, div + span + span {
+		width: 50%;
+	}
+	span.neutral {
+		&:nth-of-type(1) {
+			background: $xlight;
+		}
+		&:nth-of-type(2) {
+			background: $light;
+		}
+		&:nth-of-type(3) {
+			background: $med;
+		}
+		&:nth-of-type(4) {
+			background: $dark;
+			color: white;
+		}
+		&:nth-of-type(5) {
+			background: $xdark;
+			color: white;
+		}
+	}
+	div.neutral {
+		&:first-of-type {
+			@include light-gradient;
+		}
+		&:first-of-type + div {
+			@include dark-gradient;
+			color: white;
+		}
+	}
+	div.brand {
+		background: $brand;
+
+		&.gradient {
+			@include brand-gradient;
+			color: white;
+		}
+	}
+		span.brand {
+			background: $light-brand;
+		}
+		span.brand + span {
+			background: $dark-brand;
+			color: white;
+		}
+	div.accent {
+		background: $accent;
+
+		&.gradient {
+			@include accent-gradient;
+			color: white;
+		}
+	}
+		span.accent {
+			background: $light-accent;
+		}
+		span.accent + span {
+			background: $dark-accent;
+			color: white;
+		}
+}
+
+form {
+	fieldset {
+		div {
+			margin: $margin 0;
+		}
+	}
+}
+
+.m-accordion {
+	margin: 0;
+}
+
+#buttons {
+	// white-space: nowrap;
+	text-align: center;
+}
+
+// ICONS
+.icons {
+
+	.m-inner-content {
+		overflow: hidden;
+
+		p:first-child {
+			margin-bottom: $margin*2;
+		}
+		ul.icons {
+			float: left;
+			width: 33%;
+			margin: 0 0 $margin;
+			padding-left: $margin/2;
+			list-style: none;
+
+			li {
+				margin: $margin+$margin/2 0;
+				border: 0;
+				// text-transform: capitalize;
+                font-size: $text;
+
+				&:before {
+					vertical-align: bottom;
+					margin-right: $margin;
+					font-size: $xlarge-text+5;
+				}
+			}
+		}
+	}
+	// GENERAL
+	.heart {
+		@include icon(heart);
+	}
+	.half-heart {
+		@include icon(half-heart);
+	}
+	.empty-heart {
+		@include icon(empty-heart);
+	}
+	.plus {
+		@include icon(plus);
+	}
+	.minus {
+		@include icon(minus);
+	}
+	.location {
+		@include icon(location);
+	}
+	.home {
+		@include icon(home);
+	}
+	.user {
+		@include icon(user);
+	}
+	.settings {
+		@include icon(settings);
+	}
+	.refresh {
+		@include icon(refresh);
+	}
+	.share {
+		@include icon(share);
+	}
+	.picture {
+		@include icon(picture);
+	}
+	.volume {
+		@include icon(volume);
+	}
+	.volume-high {
+		@include icon(volume-high);
+	}
+	.volume-low {
+		@include icon(volume-low);
+	}
+	.mic {
+		@include icon(mic);
+	}
+	.reply {
+		@include icon(reply);
+	}
+	.lock {
+		@include icon(lock);
+	}
+	.email {
+		@include icon(email);
+	}
+	.cart {
+		@include icon(cart);
+	}
+	.cart-alt {
+		@include icon(cart-alt);
+	}
+	.edit {
+		@include icon(edit);
+	}
+	.video {
+		@include icon(video);
+	}
+	.globe {
+		@include icon(globe);
+	}
+	.upload {
+		@include icon(upload);
+	}
+	.download {
+		@include icon(download);
+	}
+	.map {
+		@include icon(map);
+	}
+	.mobile {
+		@include icon(mobile);
+	}
+	.tablet {
+		@include icon(tablet);
+	}
+	.desktop {
+		@include icon(desktop);
+	}
+	.link {
+		@include icon(link);
+	}
+	.calendar {
+		@include icon(calendar);
+	}
+	.star {
+		@include icon(star);
+	}
+	.delete {
+		@include icon(delete);
+	}
+	.alert {
+		@include icon(alert);
+	}
+	.signpost {
+		@include icon(signpost);
+	}
+	.pencil {
+		@include icon(pencil);
+	}
+	.user {
+		@include icon(user);
+	}
+	.users {
+		@include icon(users);
+	}
+	.female-user {
+		@include icon(female-user);
+	}
+	.folder {
+		@include icon(folder);
+	}
+	.beaker {
+		@include icon(beaker);
+	}
+	.repeat {
+		@include icon(repeat);
+	}
+	.retweet {
+		@include icon(retweet);
+	}
+	.sync {
+		@include icon(sync);
+	}
+	.undo {
+		@include icon(undo);
+	}
+	.unlock {
+		@include icon(unlock);
+	}
+	.music {
+		@include icon(music);
+	}
+	.inbox {
+		@include icon(inbox);
+	}
+	.cabinet {
+		@include icon(cabinet);
+	}
+	.print {
+		@include icon(print);
+	}
+	.star-half {
+		@include icon(star-half);
+	}
+	.flag {
+		@include icon(flag);
+	}
+	.warning {
+		@include icon(warning);
+	}
+	.chat {
+		@include icon(chat);
+	}
+	.chat-alt {
+		@include icon(chat-alt);
+	}
+	.chats {
+		@include icon(chats);
+	}
+	.chats-alt {
+		@include icon(chats-alt);
+	}
+	.leftarrow {
+		@include icon(leftarrow);
+	}
+	.rightarrow {
+		@include icon(rightarrow);
+	}
+	.uparrow {
+		@include icon(uparrow);
+	}
+	.downarrow {
+		@include icon(downarrow);
+	}
+	.bookmark {
+		@include icon(bookmark);
+	}
+	.bookmark-alt {
+		@include icon(bookmark-alt);
+	}
+	.price-tag {
+		@include icon(price-tag);
+	}
+	.price {
+		@include icon(price);
+	}
+
+	// SOCIAL ICONS
+	.facebook {
+		@include icon-social(facebook);
+        color: $facebook;
+	}
+	.fblike {
+		@include icon-social(fblike);
+	}
+	.twitter {
+		@include icon-social(twitter);
+        color: $twitter;
+	}
+	.pinterest {
+		@include icon-social(pinterest);
+        color: $pinterest;
+	}
+	.googleplus {
+		@include icon-social(googleplus);
+        color: $googleplus;
+	}
+	.linkedin {
+		@include icon-social(linkedin);
+	}
+	.email2 {
+		@include icon-social(email);
+	}
+	.youtube {
+		@include icon-social(youtube);
+	}
+	.vimeo {
+		@include icon-social(vimeo);
+	}
+	.rss {
+		@include icon-social(rss);
+	}
+}

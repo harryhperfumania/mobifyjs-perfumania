@@ -1,0 +1,110 @@
+{>root/}
+
+{<main}
+	{#content}
+		{breadcrumbs}
+		<hr/>
+
+		{title}
+
+		{container|openTag|s}
+		{! required for desktop scripts !}
+
+			{image}
+	
+			<div class="x-grid x-price-main">
+				<div>
+					{#price}
+						<div class="x-price">
+							{total}
+						</div>
+						<div class="x-promo">
+							{promo}
+						</div>
+						<div class="x-savings">
+							{savings}
+						</div>
+					{/price}
+				</div>
+				<div>
+					<div class="product-detail-form">
+						<div class="product-links"></div>
+						{orderForm}
+						{orderSpinner}
+					</div>
+				</div>
+			</div>
+			
+			{?details}
+				<div class="m-accordion x-details">
+					{?share}
+					<dl class="x-share">
+						<dt>Share</dt>
+						<dd>{share}</dd>
+					</dl>
+					{/share}
+
+					{#details}
+					<dl class="m-item">
+						<dt class="m-header">{title}</dt>
+						<dd class="m-content">
+							<div class="m-inner-content">
+								{content}
+							</div>
+						</dd>
+					</dl>
+					{/details}
+				</div>
+			{/details}
+		{container|closeTag|s}
+
+		{?relatedProducts}
+			{relatedProducts}
+			<hr/>
+		{/relatedProducts}
+
+		{?recommendedProducts}
+			{recommendedProducts}
+			<hr/>
+		{/recommendedProducts}
+		
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{%script}
+		var addthis_config =
+		{
+			// Don't include AddThis CSS
+		   	ui_use_css: false
+		}
+	{/script}
+
+	{content.scripts}
+	{%script}
+		(function($) {
+			$.fn.togglePhoto = function() {
+				
+				if ($(this).find('option:selected').attr('data-part-number').length) {
+					var size = $(this).find('option:selected').attr('data-part-number');
+					var imageDiv = $(this).find('div.' + size);
+					
+					if (imageDiv.length) {
+						if (imageDiv.find('img').attr('complete')) { // FF returns true even if the image is not loaded
+							imageDiv.siblings().hide();
+							imageDiv.show();
+						}
+					}
+				}
+			};
+
+			// transform order form on outof stock quantity sumbission error
+	        jQuery('body').ajaxComplete( function(_, xhr, settings) {
+	            if (/ErrorHandlingOrderItemCmd/.test(settings.url)) {
+	            	orderFormTransform($('form.add-to-cart-form'));
+	            }
+	        });
+		})(jQuery)
+	{/script}
+{/scripts}

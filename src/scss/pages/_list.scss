@@ -1,0 +1,87 @@
+.x-list {
+
+    .x-no-results,
+	.x-searchMsg {
+		color:$gray;
+		margin:$margin 0;
+	}
+
+    .x-assets-block {
+        margin: 0 0 $margin 0;
+
+        .x-image-large {
+            display: block;
+        }
+    }
+
+    .x-pagination + .x-products-list {
+    	margin-top:-$margin;
+    }
+
+    .results-per-page {
+        width: 100%;
+    }
+
+    .x-search-facets {
+
+        &.x-expandable {
+
+            .x-toggle:before {
+                @include x-icon-plus;
+                float: right;
+                font-size: $xlarge-text;
+                line-height: 130%;
+            }
+
+            // IF OPENED
+            &.x-active-toggle .x-toggle:before {
+                @include x-icon-minus;
+            }
+        }
+         
+        .x-toggle ~ .m-content {
+            display: none;
+        }
+        &.x-active-toggle .x-toggle ~ .m-content {
+            display: block;
+        }
+
+        .x-facets-accordion ul li {
+            border-top: solid 1px $border;
+            a {
+                display: block;
+                padding: $margin;
+                color: $dark;
+            }
+        }
+        .x-remove-facets {
+            padding:$margin/2;
+            li {
+                display: inline-block;
+                margin: $margin/2 $margin/4;
+
+                a.x-accent-button { 
+                    margin:0;
+                    padding:$margin*.8 $margin;
+                    font-size: $small-text+1;
+                    line-height: 1.5;
+                    white-space: nowrap;
+
+                    &:active,
+                    &:visited {
+                        color: #fff;
+                    }
+
+                    &:after {
+                        @include x-icon-cross;
+                        margin-left:$margin*1.2;
+                    }
+                }
+            }
+
+            & + .x-facets-accordion {
+                border-top: solid 1px $border;
+            }
+        }
+    }
+}

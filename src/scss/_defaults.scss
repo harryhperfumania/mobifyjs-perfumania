@@ -1,0 +1,347 @@
+// ==========================================================================
+// DEFAULT CSS STYLES
+// ==========================================================================
+//
+// CSS FORMATTING ORDER
+// This is the order you should follow when writing your styles
+// It makes it easier to read, and for other people come in and fix bugs later.
+// Please help keep our work consistent!
+// 
+// 		.class/#id {
+//			overriding includes/mixins/extends
+//				ex: @include brand-gradient;
+//					@extend .x-button;
+//
+// 			positioning elements
+// 				ex: position: relative;
+// 					z-index: 100;
+//
+// 			shape elements
+// 				ex: width: 100px;
+// 					padding: $margin;
+//
+// 			style elements
+// 				ex: background: white;
+// 					border: 1px solid $brand;
+//					@include border-radius(2px);*
+//
+//					*	"Helper" includes are not the same as overriding ones!
+//						Helper includes simply make it easier to use CSS3 without 
+//						writing it all out
+//
+// 			text elements 
+// 				ex: line-height: $line;
+// 					font-size: $text;
+// 					text-transform: uppercase;
+// 		}
+//
+// ==========================================================================
+// COLOURS & GRADIENTS
+// ==========================================================================
+
+	// NEUTRAL COLOURS
+	$xdark: #000; 		// the darkest neutral colour
+	$dark: #373737; 	// a dark neutral colour
+	$gray: #666; 		// a mid-dark neutral colour
+	$med: #aaa; 		// the mid-tone neutral colour
+	$light: #ededed; 	// a light neutral colour
+	$xlight: #f8f8f8; 		// the lighest neutral colour
+
+	// BLOCK ACCORDION COLOURS (gray)
+	$xblockgray: #abaeb0;
+
+	// ACTIVE COLOURS (green)
+	$xactive: #85c738; 
+	$xctive-dark: darken($xactive, 12%);
+
+	// IMPORTANT COLOURS (red)
+	$ximportant: #d93434;
+	$xlightimportant: #f28484; 
+
+	// REWARDS COlOURS (pink)
+	$xrewardlight: #f3abcb;
+	$xrewarddark: #ee85b1;
+
+	// SOCIAL COLOURS
+	$facebook: #3b5b99;
+	$twitter: #00a9e5;
+	$pinterest: #cd2027;
+	$googleplus: #d44635;
+
+	// LIGHT GRADIENT
+	@mixin light-gradient {
+		@include background-image(linear-gradient(white, $light));
+		border-style: solid;
+		border-color: $border;
+	}
+	// MID GRADIENT
+	@mixin mid-gradient {
+		@include background-image(linear-gradient(#c5c9cd, #abaeb0));
+		border-color: $med;
+	}
+
+	// DARK GRADIENT
+	@mixin dark-gradient {
+		@include background-image(linear-gradient($dark, $xdark));
+		border-style: solid;
+		border-color: $xdark;
+	}
+
+	// BRAND
+	$brand: #cda87e; // the main colour from the company's brand
+		$light-brand: lighten($brand, 10%); // secondary of the brand colour
+		$dark-brand: darken($brand, 20%); 	// secondary of the brand colour
+
+	// BRAND GRADIENT
+	@mixin brand-gradient {
+		@include background-image(linear-gradient($brand, $dark-brand));
+		border-style: solid;
+		border-color: $dark-brand;
+	}
+
+	// ACCENT
+	$accent: #dda547; // the accent colour (if there is one)
+		$light-accent: lighten($accent, 10%); // secondary of accent colour
+		$dark-accent: darken($accent, 10%); 	// secondary of accent colour
+
+	// ACCENT GRADIENT
+	@mixin accent-gradient {
+		@include background-image(linear-gradient($accent, $dark-accent));
+		border-style: solid;
+		border-color: $dark-accent;
+	}
+
+	// BORDERS
+	$border: #cacaca;
+	$borderxblock: #b6b6b6;
+	$bordercheck: #a7a7a7;
+
+	@mixin extra-block {
+		@include box-shadow(inset 0 1px 1px $border);
+		background: $xlight;
+		color:$gray;
+	}
+
+// ==========================================================================
+// MARGINS + TEXT
+// ==========================================================================
+
+	$margin: 10px; // use multipliers to scale
+	$block-margin: $margin*2; // side margin and spacing between blocks
+	// ex:  padding: $margin*2;
+	//		padding: $margin/2;
+
+	$rounded: 3px; // rounded corners
+	// ex: 	@include border-radius($rounded);
+
+	$line: 1.5;
+	$text: 13px; // Default
+		$xsmall-text: 10px;
+		$small-text: 11px;
+		$large-text: 14px;
+		$xlarge-text: 16px;
+		$price-text: $large-text*2;
+
+	// Default fonts (override if desired)
+	$font: "Helvetica", "Arial", sans-serif;
+	$font-serif: "Georgia", "Droid Serif", serif;
+
+// ==========================================================================
+// MIXINS
+// ==========================================================================
+
+
+
+// ==========================================================================
+// GENERAL
+// ==========================================================================
+
+* 	{
+	@include box-sizing(border-box);
+}
+html 	{
+	-webkit-text-size-adjust: none;
+}
+html.x-android {
+	text-rendering: auto;
+}
+body 	{
+	position: relative;
+	min-width: 280px;
+	font-family: $font;
+	font-size: $text;
+	line-height: $line;
+	color: $xdark;
+}
+#x-main {
+	position: relative;
+	padding: $margin;
+}
+
+// WITHIN THE CONTENT
+a {
+	text-decoration: none;
+	color: $brand;
+
+	&:visited {
+		color: $brand;
+	}
+	&:active {
+		color: $dark-brand;
+	}
+}
+
+// FORM ELEMENTS
+// see module "form"
+
+// BUTTON ELEMENTS
+// see module "actions"
+
+// ==========================================================================
+// TITLES
+// ==========================================================================
+
+h1, h2, h3, h4, h5, h6 {
+	margin: $margin 0;
+	font-weight: bold;
+
+	&:first-child {
+		margin-top: 0;
+	}
+}
+h1 {
+	font-size: $xlarge-text;
+	line-height: 1.3;
+}
+h2 {
+	font-size: $large-text;
+	line-height: 1.3;
+}
+h3, h4, h5, h6 {
+	font-size: $text+1;	
+}
+
+// ==========================================================================
+// LISTS
+// ==========================================================================
+
+// If you wish to remove all list styling, use this mixin
+@mixin kill-list {
+	margin: 0;
+	padding: 0;
+
+	> li, > * {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+ul, ol {
+	margin: $margin 0 $margin $margin*3;
+
+	li {
+		margin: $margin/2 0;
+	}
+}
+ul {
+	list-style-type: disc;
+}
+ol {
+	list-style-type: decimal;
+}
+
+img {
+	display: inline-block;
+	max-width: 100%;
+	height: auto;
+	margin: 0;
+}
+
+// ==========================================================================
+// HIDE & SHOW
+// ==========================================================================
+
+.x-hide {
+	display: none;
+}
+.x-show {
+	display: block;
+}
+
+// ==========================================================================
+// SEPARATORS
+// ==========================================================================
+
+@mixin separator {
+	clear:both;
+	display: block;
+	height: 2px;
+	width:auto;
+	border:none;
+	max-width:none !important;
+	margin: $block-margin (-$margin/2);
+	@include background-image(linear-gradient(left, white, $light 15%, $light 85%, white));
+	font-size:0;
+	
+	&:before {
+		content:'';
+		display: block;
+		height: 1px;
+		@include background-image(linear-gradient(left, white, $border 10%, $border 90%, white));
+	}
+	&:after {
+		content:'';
+		display: block;
+		height: 1px;
+		margin-top:1px;
+		@include background-image(linear-gradient(left, white, lighten($light, 4%) 20%, lighten($light, 4%) 80%, white));
+	}
+}
+hr,
+.x-separator{
+	@include separator;
+}
+#x-main > hr:last-child {
+	margin-bottom: 0;	
+}
+#x-root .x-global-padding {
+	padding:$margin;
+}
+
+.x-spinner {
+	display: block;
+	width:100%;
+	min-height:16px;
+	background: url(i/ajax-loader.gif) no-repeat center center;
+	background-size: 64px 8px;
+}
+
+// DATA LISTS (e.g. cart total)
+#x-main .x-data-line { // override explicit styles with #x-main
+    font-size: 0;
+    line-height: 0;
+    padding: $margin*0.7 $margin;
+    border-bottom: 1px solid rgba($border, .3);
+
+    &.total {
+    	border-bottom: 0;
+    }
+
+    &:after {
+        content: '';
+        clear: both;
+        display: block;
+        width: 100%;
+    }
+
+    span {
+        float: left;
+        font-size: $text;
+        line-height: $line;
+
+        &:nth-of-type(2) {
+            float:right;
+        }
+    }
+}

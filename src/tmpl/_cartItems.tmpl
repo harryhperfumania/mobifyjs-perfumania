@@ -1,0 +1,38 @@
+{?itemsList}
+<section class="m-accordion x-block-accordion x-cart-items">
+	<div class="m-item m-active m-opened">
+		<h3 class="m-header">Items ({itemsList.length})</h3>
+		<div class="m-content">
+			<div class="m-inner-content">
+				{?discount}
+					<div class="x-discount">
+						{discount}
+					</div>
+				{/discount}
+				<ul class="x-cart-items-list">
+				{#itemsList}
+					<li class="x-item">
+						<div class="x-left-col">
+							{image}
+							<label class="x-quantity"><span>Qty:</span> {quantity}</label>
+							{?remove}{update}{/remove}
+						</div>
+						<div class="x-main-col">
+							<h4 {?gift}class="x-gift"{/gift}>{title}</h4>
+							<ul class="x-item-info">
+								<li class="x-msrp">MSRP: {msrp}</li>
+								<li class="x-our-price">Our Price: {ourPrice|s}</li>
+								<li class="x-your-price">Your Price: {yourPrice|s}</li>
+								<li class="x-item-discount">{discount}</li>
+								<li class="x-number">{number}</li>
+							</ul>
+							{remove}
+						</div>
+					</li>
+				{/itemsList}
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+{/itemsList}

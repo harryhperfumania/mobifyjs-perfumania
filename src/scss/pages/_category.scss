@@ -1,0 +1,27 @@
+.x-category {
+    .x-nav-categories {
+        margin: $margin 0;
+        .x-quick-links {
+            a {
+                padding-right: $margin+5;
+            }
+        }
+    }
+
+    .x-featured-title {
+        margin: $block-margin 0 $margin;
+        font-size: $xlarge-text;
+        text-align: center;
+    }
+
+    .view-all {
+        width: 100%;
+        color: $gray;
+        &:after {
+            @include x-icon-smarrowright;
+            margin-left: 1em;
+            color: $gray;
+            font-size: 80%;
+        }
+    }
+}

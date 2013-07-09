@@ -1,0 +1,275 @@
+#x-header {
+    header {
+        height: 40px;
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        background: #000 url('i/headertile.png') 0 0 repeat-x;
+        background-size: 5px 30px;
+        .x-logo {
+            width: 135px;
+            height: 40px;
+            display: block;
+            text-indent: -9999px;
+            overflow: hidden;
+            background: url('i/logo.png') center center no-repeat;
+            margin: 0 auto;
+            background-size: 90%;
+        }
+        .x-cart a,
+        .x-menu,
+        .x-search-menu {
+            display: block;
+            height: 40px;
+            top: 0;
+            position: absolute;
+            &.tap {
+                color: #777;
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: -8px;
+                    left: 50%;
+                    z-index: 100;
+                    margin-left: -8px;
+                    border-left: 8px solid transparent;
+                    border-right: 8px solid transparent;
+                    border-top: 8px solid $xdark;
+                }
+            }
+        }
+        .x-cart {
+            a {
+                right: 0;
+                width: 60px;
+            }
+            .x-icon-cart {
+                display: block;
+                font-size: 2.5em;
+                color: #fff;
+                position: relative;
+                top: -1px;
+                &:before {
+                    @include x-icon-cart;
+                    position: absolute;
+                    top: 50%;
+                    left: 0;
+                    display: block;
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+            .qty {
+                text-align: center;
+                display: block;
+                line-height: 0;
+                font-weight: bold;
+                color: $xdark;
+                position: absolute;
+                left: 0;
+                top: 17px;
+                width: 60px;
+                z-index: 100;
+                text-indent: 6px;
+            }
+        }
+        .x-menu,
+        .x-search-menu {
+            width: 50px;
+            color: #fff;
+        }
+        .x-menu {
+            font-size: 2.1em;
+            line-height: 1.8;
+            &:before {
+                @include x-icon-menu;
+                position: absolute;
+                top: 50%;
+                margin-top: -0.8em;
+                left: 0;
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+        }
+        .x-search-menu {
+            width: 40px;
+            left: 50px;
+            font-size: 1.6em;
+            &:before {
+                @include x-icon-search;
+                position: absolute;
+                top: 50%;
+                margin-top: -0.8em;
+                left: 0;
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+
+    nav {
+        display: none;
+        margin-bottom: $margin;
+        font-size: $text+1;
+        @include box-shadow(0 1px 4px rgba(0,0,0,.23));
+        @include clearfix;
+        ul  {
+            display: none;
+            list-style-type: none;
+            border-top: 1px solid lighten($border, 10%);
+        }
+        ul, li {
+            margin: 0;
+            padding: 0;
+        }
+        ul {
+            float: left;
+            width: 50%;
+        }
+        li {
+            border-bottom: 1px solid lighten($border, 10%);
+            width: 100%;
+            &.clearance a {
+                color: $ximportant;
+            }
+        }
+        li, a {
+            display: block;
+            text-align: left;
+            @include box-sizing(border-box);
+        }
+        a {
+            padding: 15px;
+            color: $xdark;
+            font-weight: bold;
+        }
+    }
+    .x-search {
+        fieldset {
+            margin: $margin*1.5 $margin;
+            position: relative;
+        }
+        input[type="text"],
+        button[type="submit"] {
+            display: inline-block;
+            margin: 0;
+            @include box-sizing(border-box);
+        }
+        input[type="text"] {
+            position: relative;
+            top:0;
+            height: 35px;
+            width: 100%;
+            padding-right: 50px;
+            border: 1px solid $border;
+            @include box-shadow(inset 0 0 4px rgba(0,0,0,.2));
+            @include border-radius(3px);
+            color: $dark;
+            font-size: $text+1;
+            -webkit-user-modify: read-write-plaintext-only;
+            font-weight: bold;
+            &:focus {
+                outline:none;
+            }
+        }
+        button[type="submit"] {
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 100;
+            height: 100%;
+            width: 36px;
+            border-style: solid;
+            border-color: #936d47;
+            color: #fff;
+            font-size: 1.4em;
+            text-indent: -3px;
+            line-height: 0.5;
+            text-shadow: 0 1px 0 #a06d42;
+            @include border-radius(0 3px 3px 0);
+            @include background-image(linear-gradient(#cda77d, #b48455));
+            &:before {
+                @include x-icon-search;
+            }
+        }
+    }
+
+    &.x-active nav{
+        display: block;
+    }
+    &.x-expanded nav ul{
+        display: block;
+    }
+    // Hide search carat when full menu is active
+    &.x-expanded .x-search-menu.tap:after {
+        display:none;
+    }
+
+    // Checkout progress bar
+    .x-progress-bar {
+        margin-top: $margin;
+        ol {
+            display: inline-block;
+            width: 100%;
+            @include kill-list;
+
+            li {
+                float:left;
+                width: 33.3%;
+                padding: 0 1px;
+                text-align: center;
+
+                .count {
+                    display: block;
+                    height: 0;
+                    padding-top: 15px;
+                    overflow: hidden;
+                    border: solid 1px $border;
+                    background: $xlight;
+                    @include box-shadow(inset 0 1px 1px rgba(black, .05));
+                    font-size: 0;
+                    line-height: 15px;
+                    text-indent: 100%;
+                }
+
+                &.active .count,
+                &.x-completed .count {
+                    background: $xactive;
+                    border-color:$xctive-dark;
+                }
+
+                &.one .count {
+                    @include border-radius($margin 0 0 $margin);
+                }
+                &.three .count {
+                    @include border-radius(0 $margin $margin 0);
+                }
+
+                .title {
+                    display: block;
+                    padding: $margin $margin/2;
+                    color: $med;
+                    font-size: $small-text+1;
+                    line-height: 140%;
+                }
+            }
+        }
+
+        hr {
+            margin-bottom:0;
+            margin-top:0;
+        }
+    }
+}
+
+// Android specific condition (2.3.X)
+
+.x-android-2 {
+    #x-header {
+        header .x-cart .qty {
+            top: 18px;
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{#header}
+	<header>
+		{logo}
+		{cart}
+		{?navmenu}
+		<div class="menu-handle">
+			<a href="#menu" class="x-menu"></a>
+			<a href="#search" class="x-search-menu"></a>
+		</div>
+		{/navmenu}
+	</header>
+	<nav>
+		{search}
+		{navmenu}
+	</nav>
+
+	{?progressBar}
+		<div class="x-global-padding x-progress-bar">
+			{progressBar}
+			<hr/>
+		</div>
+	{/progressBar}
+{/header}

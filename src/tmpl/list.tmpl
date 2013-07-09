@@ -1,0 +1,60 @@
+{>root/}
+
+{<main}
+	{#content}
+		{breadcrumbs}
+		<hr/>
+
+		{searchMsg}
+		{categoryBanner}
+		
+
+		{?list}
+			{?searchFacets}
+				<section class="x-block-accordion x-search-facets">
+					{searchFacets}
+				</section>
+			{/searchFacets}
+
+			{pagination}
+	
+			<ul class="x-products-list">
+				{list}
+			</ul>
+
+			{pagination}
+
+			{resultsPerPage}
+		{:else}
+			{?noResultsMsg}
+				<p class="x-no-results">
+					{noResultsMsg|s}
+				</p>
+				<a class="x-button x-icon-arrowleft" href="javascript: window.history.back();">Return to previous page</a>
+			{/noResultsMsg}
+		{/list}
+
+		<hr/>
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+
+	{%script}
+		(function($) {
+			var $searchFacets = $('#x-main .x-search-facets');
+
+			// Refine search facets handler
+			if($searchFacets.find('.x-facets-accordion .m-item').length) {
+				$searchFacets.addClass('x-expandable')
+				$searchFacets.find('.x-toggle').on('click', function(){
+					var $_container = $(this).closest('.x-search-facets');
+					$_container.toggleClass('x-active-toggle');
+				});
+			}
+
+		})(Mobify.$);
+	{/script}
+{/scripts}

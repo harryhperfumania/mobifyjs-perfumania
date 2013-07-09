@@ -1,0 +1,104 @@
+.x-home {
+
+    // Promo Text
+	#headerEspot {
+        margin: 0 $margin;
+        font-size: $text;
+        font-weight: bold;
+        text-align: center;
+
+        ul {
+            @include kill-list;
+            position: relative;
+            height: 1.5em;
+
+            li {
+                opacity: 0;
+                position: absolute;
+                top: 0;
+                width: 100%;
+                @include single-transition(opacity, 1s);
+
+                &.x-active {
+                    opacity: 1;
+                    @include single-transition(opacity, 1s, .5s);
+                }
+            }
+        }
+        strong {
+            color: $ximportant;
+        }
+    }
+
+    // Hr below Promo
+    .espot-hr {
+        margin: $margin 0
+    }
+
+    .x-promos-carousel a.lightbox:after {
+        content:'';
+        position: absolute;
+        bottom: -5px;
+        right: 8px;
+        height: 40px;
+        width:40px;
+        background: url(i/icons/promo.png) no-repeat center center;
+        background-size: contain;
+    }
+
+
+    // Nav categories and drop downs menu
+    .x-shopping-nav{
+        ul {
+            @include kill-list;
+            position: relative;
+            margin:$margin 0 0;
+            li a {
+                display: block;
+                padding:$margin/2 0 $margin/2 $margin;
+                color:$dark;
+                font-size:90%;
+                font-weight: bold;
+            }
+        }
+
+        select {
+            width: 100%;
+            font-size:$text;
+        }
+    }
+
+
+    .x-promo-buttons {
+        margin: -$margin 0 $margin;
+
+        .x-nav-block {
+            a {
+                color: #fff !important;
+                &:active,
+                &:visited {
+                    color: #fff !important;
+                }
+            }
+        }
+
+        .x-nav-block:nth-of-type(1) .x-color-button {
+            background-color: #f3ae3a;
+        }
+        .x-nav-block:nth-of-type(2) .x-color-button {
+            background-color: #b66da4;
+        }
+        .x-nav-block:nth-of-type(3) .x-color-button {
+            background-color: #eb6994;
+        }
+        .x-nav-block:nth-of-type(4) .x-color-button {
+            background-color: #dd5f5f;
+        }
+    }
+
+
+    // Promo banners
+    .x-promo-banners img {
+        margin-top: $margin;
+    }
+}

@@ -1,0 +1,42 @@
+{>root/}
+
+{<main}
+	{#content}
+		{?breadcrumbs}
+			{breadcrumbs}
+			<hr/>
+		{/breadcrumbs}
+
+		{categoryBanner}
+
+		{?navCategories}
+			<section class="m-accordion x-block-accordion x-nav-categories">
+				<div class="m-item">
+					<h3 class="m-header">Categories</h3>
+					<div class="m-content">{navCategories}</div>
+				</div>
+			</section>
+		{/navCategories}
+
+
+		{?list}
+			{featuredTitle}
+			<ul class="x-products-list">
+				{list}
+			</ul>
+			{moreButton}
+		{/list}
+
+		<hr/>
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+
+	{%script}
+		(function($) {
+		})(Mobify.$);
+	{/script}
+{/scripts}

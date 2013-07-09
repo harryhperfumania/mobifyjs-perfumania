@@ -1,0 +1,20 @@
+{?cartSummary}
+{cartSummary|openTag|s}
+	<section class="m-accordion x-block-accordion x-cart-total">
+		<div class="m-item">
+			<h3 class="m-header">Cart Summary</h3>
+			<div class="m-content">
+				{cartSummary|innerHTML|s}
+			</div>
+			<ul>
+				{cartTotal}
+			</ul>
+			{?cartSavings}
+			<ul class="x-savings">
+				{#cartSavings}<li>{.}</li>{/cartSavings}
+			</ul>
+			{/cartSavings}
+		</div>
+	</section>
+{cartSummary|closeTag|s}
+{/cartSummary}

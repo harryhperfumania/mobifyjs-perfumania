@@ -1,0 +1,57 @@
+{>root/}
+
+{<main}
+	{#content}
+		{title}
+
+		{?tabs}
+			<ul class="x-swing-buttons">
+				{#tabs}
+					<li>
+						<a href="#{id}" class="x-button">{title}</a>
+					</li>
+				{/tabs}
+			</ul>
+		{/tabs}
+
+		{container}
+		<hr/>
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+	{%script}
+	 	(function($) {
+	 		var setSwingButton = function($obj, $item) {
+	 			if(!$obj || !$item)
+	 				return;
+
+	 			$obj.find('li a').removeClass('x-active');
+	 			$item.addClass('x-active');
+
+	 			$obj.find('li a').each(function(){
+	 				var $self = $(this);
+	 				if($self.hasClass('x-active'))
+	 					$($self.attr('href')).show();
+	 				else
+	 					$($self.attr('href')).hide();
+	 			});
+
+	 		}
+
+	 		setSwingButton($('.x-swing-buttons'), $('.x-swing-buttons li:first-child a.x-button'));
+	 		$('.x-swing-buttons a.x-button').on('click', function(e){
+	 			e.preventDefault();
+	 			setSwingButton($(this).closest('.x-swing-buttons'), $(this));
+	 		})
+
+	 		// Remove general validation message ('Ooops' one) if field validation is shown
+	 		if($('.formError .errorMsg').length) {
+	 			$('#errorList').hide();
+	 		}
+
+	 	})(Mobify.$);
+	{/script}
+{/scripts}

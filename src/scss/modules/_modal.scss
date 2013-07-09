@@ -1,0 +1,238 @@
+// jQuery Colorbox 
+#colorbox,
+#cboxOverlay, 
+#cboxWrapper,
+#cboxContent,
+#cboxLoadedContent {
+	height: auto !important;
+	width: 100% !important;
+}
+
+#colorbox {
+	position: absolute;
+	bottom: 0;
+	left: 0 !important;
+	right: 0;
+	top: 0 !important;
+    min-height: 100%;
+    background: rgba($dark, .95);
+    overflow:visible !important;
+	z-index:9999; 
+	padding:40px 0 0 0 !important;
+
+
+	#cboxContent {
+		padding: $block-margin $margin+5;
+		background:white;
+		@include box-shadow(0 $margin $margin*4 rgba($xdark,.75));
+		div {
+			max-width: 100%;
+		}
+		table {
+			width: 100% !important;
+		}
+		p {
+			margin-bottom:$margin;
+		}
+	}
+}
+#cboxLoadingOverlay {
+	display: none !important;
+}
+#cboxLoadingGraphic {
+	@extend .x-spinner;
+	height:100px !important;
+}
+
+#cboxClose {
+	position: absolute;
+	left:0;
+	right: 0;
+	top: 0;
+	display: block;
+	height: 40px;
+	overflow: hidden;
+	padding-top: 40px;
+	background:rgba($xdark,.4);
+
+	&:before {
+		content:'Close';
+		display: inline-block;
+		@include button;
+		position: absolute;
+		right: $margin;
+		top: 1px;
+		margin: $margin/2 0;
+		padding:$margin/2 $margin*1.5;
+	}
+}
+
+#quick-view {
+
+	.x-product-title {
+		font-size: $large-text;
+		font-weight: normal;
+	}
+	
+	.x-product-left {
+		text-align: center;
+		width: 40%;
+		float: left;
+		padding-right: 10px;
+		img {
+			width: 80%;
+		}
+	}
+	.x-product-right {
+		float: right;
+		width: 60%;
+	}
+
+	.tabs > ul {
+		display: none;
+	}
+
+	.addthis_toolbox {
+		display: none;
+	}
+	.form-fields {
+		@include kill-list;
+		
+		li:after {
+			content: '';
+			display: block;
+			clear:both;
+		}
+		label {
+			float: left;
+			margin-right: $margin;
+			margin-top: $margin - 2;
+		}
+		input[type=number] {
+			display: block;
+			width: 4em;
+			margin:0;
+		}
+	}
+	.add-to-cart-button {
+		width: 100%;
+		height: 45px;
+		text-align: center;
+        font-size: $xlarge-text;
+        @extend .x-action-button;
+
+        &:before {
+            margin: 0 1%;
+            font-size: 1.25em;
+            @include x-icon-cart;
+        }
+        &:after {
+            margin: 0 1%;
+            position: relative;
+            top: -1px;
+            font-size: 0.8em;
+            @include x-icon-smarrowright;
+        }
+	}
+
+	.tab-container {
+		display: none;
+	}
+
+	.quickview-savings,
+	.quickview-prices {
+		display: block;
+		float: left;
+		clear: left;
+	}
+
+	#quick-view-form {
+
+		span.unavailable-message {
+			@extend .x-button;
+			@extend .x-disabled-button;
+			width:100%;
+		}
+
+		.unavailable-message {
+            display: none;
+        }
+	}
+
+	.retail-price,
+	.nopromo,
+	.promo {
+		display: block;
+		font-weight: bold;
+	}
+	.nopromo {
+		color:$ximportant;
+	}
+	.saving {
+		display: block;
+		color:$xlightimportant;
+	}
+	.read-more,
+	.email-a-friend-link,
+	.email-a-friend-disabled,
+	.hide {
+		display: none;
+	}
+
+	.loading-image {
+        @extend .x-spinner;
+        display: none;
+        height: 75px;
+    }
+}
+
+#atImgBox_pinterest_share{
+	@extend #colorbox;
+/*	&[style*="height: 0"]{
+		display: none;
+	}*/
+	.atPinHdr {
+		height: 40px;
+		margin-top:-40px;
+		@include background-image(linear-gradient($xdark, rgba($xdark,0)));
+		
+		.atPinHdrMsg {
+			display: block;
+			height: 40px;
+			padding: 0 $margin*6 0 $margin;
+			color:white;
+			font-size: $xlarge-text;
+			font-weight: bold;
+			line-height: 40px;
+		}
+	}
+	.atPinClose {
+		@extend #cboxClose;
+	}
+	.atPinMn {
+		@extend #cboxContent;
+		display: inline-block;
+		padding:$margin 0 $block-margin;
+		text-align: center;
+
+		.atImgSpanOuter {
+			float:left;
+			width: 45%;
+			margin: $margin 2.5%;
+			border:solid 1px $border;
+			&:nth-of-type(odd) {
+				clear:both;
+			}
+			img {
+				margin: 0 !important;
+				opacity: 1 !important;
+			}
+			.atImgSpanSize {
+				display: block !important;
+				padding: 0 $margin $margin/2;
+				color:$med;
+				font-size: $small-text;
+			}
+		}
+	}
+}

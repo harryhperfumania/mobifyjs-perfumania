@@ -1,0 +1,66 @@
+.x-signIn {
+	#loginPageTop,
+    .rounded-box,
+    .rounded-box > h3 {
+		display: none;
+	}
+
+    #logonForm {
+        display: block;
+    }
+
+	fieldset {
+		margin-bottom:$block-margin;
+        ul {
+            @include kill-list;
+            li {
+                margin:$margin*1.5 0;
+            }
+        }
+
+        select {
+            width: 100%;
+            margin:$margin/2 0;
+        }
+
+        .x-small-button {
+        	margin-top:$margin/2 0;
+        }
+
+        .loginInfo {
+            margin:$block-margin 0;
+        }
+
+        .formError input {
+            border-color: $ximportant;
+        }
+
+        .formError input::-webkit-input-placeholder {
+            color: $ximportant;
+        }
+
+    }
+
+    #registrationEspot {
+        color: $dark;
+        margin: $margin+5 $margin/2;
+    }
+    #newCustomerRegister {
+        .x-primary-button {
+            margin: $margin*1.5 0;
+        }
+    }
+    #continueLogon {
+        margin-top: $block-margin;
+    }
+
+    #forgotPasswordBox fieldset p {
+        display: none;
+    }
+
+    .voError,
+    .voFieldError {
+        margin:$margin $margin/2;
+        color:$ximportant;
+    }
+}

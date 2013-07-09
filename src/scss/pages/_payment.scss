@@ -1,0 +1,52 @@
+.x-payment {
+	.x-payment-form {
+		ul {
+            @extend .x-form-row;
+        }
+
+        select {
+        	width: 100%;
+        }
+
+        .creditCardImages {
+        	float: right;
+        	width: 140px;
+        	margin-top: 3px;
+        }
+
+        #securityCodeInfo {
+        	display: inline-block;
+        	margin-top: $margin;
+        	color: $med;
+        	text-decoration: underline;
+        }
+
+        #addEdit a,
+        #cancelAddEdit a {
+            @extend .x-button;
+            @extend .x-small-button;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+    }
+
+    .paymentFormSection {
+        // Gift card credentials
+        @extend .x-payment-form;
+    }
+
+    .x-shipping-method {
+    	.m-inner-content  {
+    		display: inline-block;
+    		width: 100%;
+    		ul {
+    			margin:$margin*.7 0;
+    			font-weight: bold;
+    		}
+    	}
+    	.x-small-button {
+	    	float:right;
+	    	margin:0 0 0 1em;
+	    }
+    }
+}

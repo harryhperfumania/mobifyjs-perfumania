@@ -1,0 +1,45 @@
+.x-checkout {
+	.x-progress-bar {
+        display: none;
+    }
+    
+    h1 .order-number {
+        color: $ximportant;
+    }
+
+    .x-thank-you {
+        display: block;
+        margin: $margin 0 $block-margin;
+        div {
+            // override inline style properties
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    }
+
+    .x-payment-info ul {
+        margin: -$margin 0;
+        li{
+            margin: $margin 0;
+            &:last-child strong{
+                color: $ximportant;
+            }
+        }
+    }
+
+    .x-order-address,
+    .x-billing-address {
+        ul li:last-child{
+            margin-top: $margin;
+        }
+    }
+
+    .x-shipping-method ul {
+        font-weight: bold;
+    }
+
+    .x-commission-junction {
+        display: none;
+    }
+}

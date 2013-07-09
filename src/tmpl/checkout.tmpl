@@ -1,0 +1,44 @@
+{>root/}
+
+{<main}
+	{#content}
+		{?breadcrumbs}
+			{breadcrumbs}
+			<hr/>
+		{/breadcrumbs}
+
+		{title}
+
+		{?thankYou}
+			<div class="x-thank-you">{thankYou}</div>
+		{/thankYou}
+
+		{#summaryInfoBlocks}
+			{>_staticBlock/}
+		{/summaryInfoBlocks}
+
+		{?cartSummary}
+			{>_cartSummary/}
+		{/cartSummary}
+
+		{?itemsList}
+			{>_cartItems/}
+		{/itemsList}
+
+		<div class="x-commission-junction">
+			{commissionJunction}
+		</div>
+
+		<hr/>
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+	{%script}
+	 	(function($) {
+
+	 	})(Mobify.$);
+	{/script}
+{/scripts}

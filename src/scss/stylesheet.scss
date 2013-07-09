@@ -1,0 +1,14 @@
+// Reset and Normalize Styles - LEAVE THESE AT TOP
+
+@import "modules/reset"; // This clears all styles for elements
+@import "modules/normalize"; // This readds styling for page elements and normalizes them across browsers (git.io/normalize)
+
+// Icon Fonts - These have to load before everything else
+@import "modules/iconfont";
+@import "modules/fontcustom";
+
+// Custom Styles for this project
+
+@import "defaults"; // Sitewide defaults
+@import "modules"; // Modules used on the site
+@import "pages"; // Page specific styles

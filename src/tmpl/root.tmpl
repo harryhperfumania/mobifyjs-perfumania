@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+{$html|openTag|s}
+{$head|openTag|s}
+    {+head}
+        {#lib_import/}
+
+        {%script}
+            Mobify.enhance();
+
+            {?OS}
+                Mobify.$('html').addClass('x-{OS.name}-{OS.version}');
+            {/OS}
+
+            // Scroll the page past URL bar if user did not scroll manually, and
+            // hash is either absent or is a mobify properties override.
+            Mobify.$(window).on('load', function() {
+                if (location.hash.match(/^(?:#mobify-override|$)/)) {
+                    setTimeout(function() {
+                        if (!window.pageYOffset) {
+                            window.scrollTo(0, 1);
+                            window.scrollTo(0, 0);
+                        }
+                    }, 250);
+                }
+            });     
+        {/script}
+
+        {$head|innerHTML|s}
+
+        {+style}
+            <link rel="stylesheet" type="text/css" href="{config.configDir}stylesheet.css?{buildDate}" />
+        {/style}
+
+
+        {#touchIcon}
+            <link rel="apple-touch-icon" href="{.}" />
+            <meta name="apple-mobile-web-app-title" content="Perfumania">
+        {/touchIcon}
+        
+        <meta name="viewport" content="{mobileViewport}" />
+        
+        {#formatDetection}
+            <meta name="format-detection" content="{.|s}" />
+        {/formatDetection}
+
+        {?config.ajs}
+            <script async src="{config.ajs}#m=1&t={content.templateName}"></script>
+        {/config.ajs}
+    {/head}
+</head>
+{$body|openTag|s}
+    {+body}
+        <section id="x-root" class="x-{content.templateName}
+        {#content.secondaryTemplateName}
+            {~s}x-{.}
+        {/content.secondaryTemplateName}">
+            <section id="x-header">
+                {+header}
+                    {>_header/}
+                {/header}
+            </section>
+            <section id="x-main">
+                {+main}
+                    {#content}
+                        {$body|innerHTML|s}
+                    {/content}
+                {/main}
+            </section>
+            <section id="x-footer">
+                {+footer}
+                    {>_footer/}
+                {/footer}
+            </section>
+        </section>
+    {/body}
+    {+scripts}
+        {>_scripts/}
+    {/scripts}
+    {+tracking}
+        {tracking}
+    {/tracking}
+</body>
+</html>

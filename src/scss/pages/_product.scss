@@ -1,0 +1,204 @@
+.x-product {
+    
+    // Image
+    .x-product-photo {
+        text-align: center;
+
+        img {
+            max-height: 180px;
+        }
+    }
+
+    .x-price-main {
+        margin:$margin 0;
+    }
+    // Price
+    .x-price {
+        display: inline-block;
+        margin-bottom:$margin/2;
+        .label {
+            display: block;
+            font-size: $text+1;
+            font-weight: bold;
+        }
+        .price-value {
+            display: block;
+            color:$ximportant;
+            font-size: $price-text;
+            font-weight: bold;
+            line-height: 0.8;
+            abbr {
+                margin-right:1px;
+                font-size: $large-text;
+                vertical-align: super;
+            }
+        }
+    }
+
+    // Savings 
+    .x-savings {
+        margin:$margin*1.5 0;
+        color:$med;
+        line-height: 1.5;
+        font-size: $small-text+1;
+
+        .savings {
+            color:$ximportant;
+            font-weight: bold;
+
+            br {
+                display: none;
+            }
+        }
+
+        .prices > span {
+            display: block;
+            .price-value {
+                text-decoration: line-through;
+            }
+        }
+    }
+
+    .error-message {
+        @extend .x-validation-error;
+        margin-bottom: $margin;
+    }
+
+    // Add to cart
+    .x-add-to-cart {
+        margin:$margin/2 0 $margin;
+
+        .x-button {
+            height: 45px;
+            width: 100%;
+            margin:0;
+            padding: 0;
+            line-height: 44px;
+        }
+
+        .x-order-button {
+            text-align: center;
+            font-size: $xlarge-text;
+            @extend .x-action-button;
+
+            &:before {
+                margin: 0 2%;
+                font-size: 1.25em;
+                @include x-icon-cart;
+            }
+            &:after {
+                margin: 0 2%;
+                position: relative;
+                top: -1px;
+                font-size: 0.8em;
+                @include x-icon-smarrowright;
+            }
+        }
+
+        .unavailable-message {
+            display: none;
+        }
+    }
+    .loading-image {
+        @extend .x-spinner;
+        display: none;
+        height: 75px;
+    }
+
+    // Attributes (size, quantity)
+    .x-attributes {
+        @include kill-list;
+        margin: $margin 0;
+        li {
+            display: inline-block;
+            width: 100%;
+            margin: $margin 0 0;
+
+            & .hide {
+                display: none;
+            }
+        }
+        label {
+            clear: both;
+            float: left;
+            width: 30%;
+            margin:0;
+            padding: $margin 0;
+
+            & ~ * {
+                display: block;
+                width: 70%;
+                margin-left: 30%;
+            }
+        }
+        .one-value {
+            label {
+                padding:$margin/2 0;
+            }
+            .single-attr-value {
+                padding: $margin/2 0;
+                font-size: $large-text;
+                line-height: 1.25;
+                text-align: right;
+            }
+        }
+        input {
+            margin-top: 0;
+        }
+    }
+
+    // Share
+    .x-share {
+        display: inline-block;
+        width: 100%;
+
+        dt {
+            float: left;
+            padding: $margin 0;
+            font-size: $large-text;
+            font-weight: bold;
+        }
+        dd {
+            text-align:right;
+            a {
+                margin-left: 3%;
+                display: inline-block;
+                -webkit-tap-highlight-color: none;
+                span {
+                    display: none;
+                }
+            }
+            a.addthis_button_facebook{
+                @include icon-social(facebook, $position: 'after', $size: 36px, $color: $facebook);
+            }
+            a.addthis_button_pinterest_share{
+                @include icon-social(pinterest, $position: 'after', $size: 36px, $color: $pinterest);
+            }
+            a.addthis_button_google{
+                @include icon-social(googleplus, $position: 'after', $size: 36px, $color: $googleplus);
+            }
+            a.addthis_button_twitter{
+                @include icon-social(twitter, $position: 'after', $size: 36px, $color: $twitter);
+            }
+        }
+    }
+
+    // Details
+    .x-details {
+        .x-share {
+            padding-top: $margin;
+            border-top: 1px solid $border;
+        }
+        .label {
+            font-weight: bold;
+        }
+        p {
+            margin-bottom:$margin;
+        }
+    }
+
+    // Related products
+    .product-list {
+        margin:$block-margin 0;
+    }
+}

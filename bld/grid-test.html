@@ -1,0 +1,109 @@
+<html>
+<head>
+	<title>Grid Test Page</title>
+	<link rel="stylesheet" type="text/css" href="grid.css" />
+    <meta name='viewport' content='initial-scale=1, maximum-scale=1' />
+	<style>
+		body {
+			background: #EEE;
+		}
+		.container {
+			margin: 0 auto;
+			padding: 20px !important;
+			background: #FFF;
+		}
+		/* Just for jokes/Easter egg */
+		input[type=radio] + label span {
+			display: none;
+		}
+		input[type=radio]:checked + label span {
+			display: inline;
+			padding: 0 0 0 5px;
+			color: red;
+			font-style: italic;
+		}
+	</style>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+</head>
+
+<body>
+
+	<div id="x-main" class="container">
+		<h1>
+			Grid Test Page
+		</h1>
+
+		<div class="x-button-container">
+			<button class="x-23">
+				2-3 Grid
+			</button>
+			<button class="x-34">
+				3-4 Grid
+			</button>
+		</div>
+
+		<ul id="x-grid" class="x-23">
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+			<li>
+				<img src="i/kitty.jpg" />
+			</li>
+		</ul>
+	</div>
+
+	<script>
+		$(window).on('resize load', function(e) {
+			if(window.innerWidth >= 480) {
+				$('html').attr('class', 'x-landscape');
+			} else {
+				$('html').attr('class', 'x-portrait');
+			}
+		});
+
+		$(document).ready(function() {
+			$grid = $('#x-grid');
+
+			$('.x-23').on('click', function(e) {
+				$grid.attr('class', 'x-23');
+			});
+
+			$('.x-34').on('click', function(e) {
+				$grid.attr('class', 'x-34');
+			});
+		});
+	</script>
+
+</body>
+</html>

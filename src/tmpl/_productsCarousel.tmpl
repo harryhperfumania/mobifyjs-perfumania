@@ -1,0 +1,20 @@
+{!
+	Called directly from mobify.konf
+	Required {slides} and {slides.products} parameters
+!}
+
+<div class="m-carousel m-fluid x-products-carousel">
+	<ul class="m-carousel-inner">
+		{#slides}
+			<li class="m-item">
+				<ul class="x-product-slide">{#.}{.}{/.}</ul>
+			</li>
+		{/slides}
+	</ul>
+
+	<div class="m-carousel-controls">
+	    <a class="m-prev x-products-prev icon-arrowleft" href="#" data-slide="prev"></a>
+	    <a class="m-next x-products-next icon-arrowright" href="#" data-slide="next"></a>
+	    <p class="x-carousel-pagination"></p>
+	</div>
+</div>

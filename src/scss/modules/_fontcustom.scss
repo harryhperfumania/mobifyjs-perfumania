@@ -1,0 +1,91 @@
+@font-face {
+  font-family: "fontcustom";
+  src: url("fonts/icons/fontcustom/fontcustom.eot?#iefix") format("embedded-opentype"),
+       url("fonts/icons/fontcustom/fontcustom.woff") format("woff"),
+       url("fonts/icons/fontcustom/fontcustom.ttf") format("truetype"),
+       url("fonts/icons/fontcustom/fontcustom.svg#fontcustom") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+// Fontcustom Mixin
+
+@mixin fontcustom {
+  display: inline-block;
+  font-family: "fontcustom";
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  vertical-align: middle;
+}
+
+// Icon Mixins
+
+@mixin x-icon-menu {
+  @include fontcustom;
+  content: "\f106";
+}
+
+@mixin x-icon-search {
+  @include fontcustom;
+  content: "\f109";
+}
+
+@mixin x-icon-cart {
+  @include fontcustom;
+  content: "\f102";
+}
+
+@mixin x-icon-arrowleft {
+  @include fontcustom;
+  content: "\f100";
+}
+
+@mixin x-icon-arrowright {
+  @include fontcustom;
+  content: "\f101";
+}
+
+@mixin x-icon-cross {
+  @include fontcustom;
+  content: "\f103";
+}
+
+@mixin x-icon-i {
+  @include fontcustom;
+  content: "\f105";
+}
+
+@mixin x-icon-minus {
+  @include fontcustom;
+  content: "\f107";
+}
+
+@mixin x-icon-plus {
+  @include fontcustom;
+  content: "\f108";
+}
+
+@mixin x-icon-smarrowdown {
+  @include fontcustom;
+  content: "\f10a";
+}
+
+@mixin x-icon-smarrowright {
+  @include fontcustom;
+  content: "\f10b";
+}
+
+@mixin x-icon-star {
+  @include fontcustom;
+  content: "\f10c";
+}
+
+.x-icon-arrowleft:before {
+  @include x-icon-arrowleft;
+  margin-right: 1em;
+}
+.x-icon-arrowright:after {
+  @include x-icon-arrowright;
+  margin-left: 1em;
+}

@@ -1,0 +1,202 @@
+{>root/}
+
+{<main}
+	{#content}
+		{breadcrumbs}
+		<hr/>
+
+		{?cartBanner}
+			<div class="x-cart-banner">
+				{cartBanner}
+			</div>
+		{/cartBanner}
+
+		{?form}
+			<div class="mainarea-OrderItemDisplayViewShiptoAssoc"> {! required for desktop scripts to work correctly !}
+
+				{form|openTag|s}
+					{cartHiddenFields}
+
+					{cartErrors}
+					{checkoutButton}
+
+					{?cartSummary}
+						{>_cartSummary/}
+					{/cartSummary}
+
+					{?itemsList}
+						{>_cartItems/}
+					{/itemsList}
+
+					<section class="m-accordion x-check-accordion x-gift-options">
+						{?giftBag}
+							<div class="m-item">
+								<h3 class="m-header">Add a Gift Bag</h3>
+								<div class="m-content">
+									<ul class="x-cart-items-list">
+									{#giftBag}
+										<li class="x-item">
+											<div class="x-left-col">
+												{image}
+											</div>
+											<div class="x-right-col">
+												{link}
+											</div>
+											<div class="x-main-col">
+												<h4>{title}</h4>
+												<ul class="x-item-info">
+													<li class="x-price">{price}</li>
+												</ul>
+											</div>
+										</li>
+									{/giftBag}
+									</ul>
+								</div>
+							</div>
+						{/giftBag}
+						{?giftMessage}
+							<div class="m-item x-gift-message">
+								<h3 class="m-header"><ins class="x-giftMsgCounter"></ins>Add a Gift Message</h3>
+								<div class="m-content">
+									<div class="m-inner-content">
+										{giftMessage}
+									</div>
+								</div>
+							</div>
+						{/giftMessage}
+					</section>
+
+					{?promoCode}
+						<section class="x-promo-code">
+							{promoCode}
+						</section>
+					{/promoCode}
+
+					{?coupons}
+						<section class="x-coupons">
+							<h3>Coupons</h3>
+							{coupons.table}
+						</section>
+					{/coupons}
+
+					{?cartSummary}
+						{>_cartSummary/}
+					{/cartSummary}
+
+					{checkoutButton}
+				{form|closeTag|s}
+			</div>
+			<hr/>
+
+			{?recommendedProducts}
+				{recommendedProducts}
+				<hr/>
+			{/recommendedProducts}
+		{:else}
+			<h1>Your cart is empty.</h1>
+			<div class="x-empty-cart">{emptyCart}</div>
+			<p><a href="/shop/?pageSize=24" class="x-button x-primary-button">Browse all Products</a></p>
+			<hr/>
+		{/form}
+
+		{?coupons}
+			{coupons.form}
+		{/coupons}
+
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+	{%script}
+		var addthis = {
+			toolbox: function(){
+				return false;
+			}
+		};
+
+		(function($) {
+			var $cartForm = $('#ShopCartForm'),
+				$giftMsgCounter = $cartForm.find('.x-giftMsgCounter'),
+				$giftMsgText = $cartForm.find('.x-gift-message textarea#giftMsgText');
+
+			// Android 2.x has issue with input and textarea fields after 2-column layout for items, so rearrange boxes for this device only
+			if($('html').hasClass('x-android-2')) {
+				$('.x-cart-items').insertAfter($('.x-promo-code'));
+			}
+
+			// Gift message accordion handler
+			// 1. Check the flag checkbox
+			if($giftMsgCounter.length && $giftMsgText.length) {
+				$cartForm.find('.x-gift-message .m-header').on('click', function(){
+					var $self = $(this).parent(),
+						$checkbox = $self.find('.m-content input#giftFlag');
+
+					if($self.hasClass('m-opened')) {
+						$checkbox.prop('checked', true);
+						$giftMsgText.focus();
+					} else {
+						$checkbox.prop('checked', false);
+					}
+				});
+				// 2. Show the characters count
+				var update_giftMsgCounter = function() {
+					$giftMsgCounter.html(150 - $giftMsgText.val().length);
+				}
+				$giftMsgText.on('keyup', function(){
+					update_giftMsgCounter();
+				});
+				update_giftMsgCounter();
+
+				// update Quick look popup
+		        jQuery('body').ajaxComplete( function(_, xhr, settings) {
+		            if (/QuickView/.test(settings.url)) {
+		                fixQuickLookModal();
+		            }
+		        });
+
+		        var fixQuickLookModal = function() {
+		        	$content = $('#quick-view'),
+		        	$form = $content.find('#quick-view-form');
+
+		        	// Move image into the form
+		        	$form.wrapInner('<div class="x-product-right">');
+		        	$content.find('.product-photo').addClass('x-product-left').prependTo($form);
+
+		        	// Move quantity under the image
+		        	$form.find('.form-fields:has(ul.attributes)').addClass('x-product-attributes').appendTo($form.find('.x-product-left'));
+
+		        	// Move title into the right column
+		        	$content.prev('h3.quick-view-header').addClass('x-product-title').prependTo($form.find('.x-product-right'));
+
+		        	// Quantity input type
+		        	$content.find('input[name=quantity]:not([type=hidden])').attr('type','number');
+		        }
+
+		        // Promo code 'apply' button turns xactive when input is focused
+	        	var $promo = $cartForm.find('.x-promo-code'),
+	        		$inputPromo = $promo.find('input#promo'),
+	        		$buttonPromo = $promo.find('button#promoBtn');
+
+	        	$inputPromo.focus(function() {
+	        		$buttonPromo.addClass('promoBtn-active');
+	        	});
+
+	        	// Fix default form submission (with Enter) to update the cart rather than proceeding to checkout
+	        	// PER-70
+	        	var fixFormUpdate = function() {
+	        		// Add hidden field that causes form submition to update the cart be default
+	        		$cartForm.append('<input type="hidden" class="x-fix-update" name="cartBtn" value="update" />');
+	        	}
+	        	fixFormUpdate();
+	        	$cartForm.find('.x-checkout-button').on('click', function(e) {
+	        		$cartForm.find('.x-fix-update').remove(); // Remove cart update flag
+	        		$cartForm.submit(); // Submit the form
+	        		fixFormUpdate(); // Remove cart update flag and put it back to keep form working right
+	        	});
+	       	}
+ 
+		})(Mobify.$);
+	{/script}
+{/scripts}

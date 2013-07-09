@@ -1,0 +1,174 @@
+{requiredScripts}
+<script src="{config.configDir}js/carousel.js"></script>
+<script src="{config.configDir}js/accordion.js"></script>
+{%script}
+    $.fn.noContext =
+    $.fn.rollover =
+    $.fn.tabs = $.noop;
+
+    // Scroll window up and back down on popup opening and closing
+    var scrollLocation,
+    _colorboxLoad = $.fn.colorbox.load,
+    _colorboxClose = $.fn.colorbox.close;
+    
+
+    // Scroll on popup interaction
+    // direction (string) can be 'up' or 'back'
+    var popupScroll = function(direction) {
+        if (direction=='up') {
+            // scroll up when popup is shown
+            if(document.body.scrollTop)
+                scrollLocation = document.body.scrollTop;
+            window.scrollTo(0, 1);
+        }
+        else if(direction=='back' && scrollLocation && scrollLocation > 0)
+            // scroll back to previous position when popup is hidden
+            window.scrollTo(0, scrollLocation);
+    }
+
+    // Assign popup scrolls
+    $.fn.colorbox.load = function(){
+        _colorboxLoad.apply(this, arguments);
+        popupScroll('up');
+    };
+    $.fn.colorbox.close = function(){
+        _colorboxClose.apply(this, arguments);
+        popupScroll('back');
+    };
+    Mobify.$(document).on('click', '.addthis_button_pinterest_share', function(){popupScroll('up')});
+    Mobify.$(document).on('click', '.atPinClose', function(){popupScroll('back')});
+    
+
+
+
+    (function($) {
+        // Header nav menu handler
+        $('.menu-handle a').on('click', function(e){
+            var $link = $(this),
+                $header = $('#x-header'),
+                $menuLink = $('.menu-handle a.x-menu'),
+                $searchLink = $('.menu-handle a.x-search-menu');
+
+            e.preventDefault();
+
+            if( $menuLink.hasClass('tap') && $searchLink.hasClass('tap')) {
+                $menuLink.removeClass('tap');
+                $header.removeClass('x-expanded');
+                return;
+            }
+
+            $link.toggleClass('tap');
+            
+            if($link.hasClass('tap')) {
+                $header.addClass('x-active');
+                if($link.hasClass('x-menu')) {
+                    $header.addClass('x-expanded');
+                    $searchLink.removeClass('tap');
+                } else {
+                    $header.removeClass('x-expanded');
+                    $menuLink.removeClass('tap');
+                }
+            } else {
+                $header.removeClass('x-active'); 
+                $header.removeClass('x-expanded');
+            }
+        });
+
+        // Pagination dropbox
+        $('.x-pagination select[data-url]').on('change',function(){
+            var $this = $(this),
+                url = $this.attr('data-url').replace('%page%', $this.val());
+            window.location = url;
+        });
+
+
+        // Init all accordions
+        (function($) {
+            $('.m-accordion').accordion()
+        })(Mobify.$);
+
+
+        // Init all carousels
+        $('.m-carousel').carousel();
+
+        // Carousels events handler
+        var carouselEventsHandler = function($carousel, index) {
+            var $slides = $carousel.find('.m-item');
+
+            if($slides.length < 2) {
+                $carousel.carousel('unbind');
+                $carousel.find('.m-carousel-controls').hide();
+                return false;
+            }
+
+            if(!index)
+                // index can either be passed from beforeSlide event or false fo initial load
+                var index = $carousel.find('.m-item.m-active').index()+1;
+
+            // Set title from data-control-text attribute to .x-carousel-title
+            // (prpmos carousel, homepage)
+            if($carousel.find('.x-carousel-title').length) {
+                var $slide = $slides.eq(index-1).find('*[data-control-text]'),
+                    slideTitle = $slide.attr('data-mobify-text') ? $slide.attr('data-mobify-text') : $slide.attr('data-control-text');
+                slideTitle = slideTitle.replace(/^(.*)[\s?]<br\s*[\/]?>/gi, '<strong>$1</strong> ');
+                $carousel.find('.x-carousel-title').html(slideTitle);
+            }
+
+            // Set pagination e.g. “Page 1 of 5”
+            // (prpmos carousel, homepage)
+            if($carousel.find('.x-carousel-pagination').length) {
+                $carousel.find('.x-carousel-pagination').html('Page <strong>' + index + '</strong> of <strong>' + $slides.length + '</strong>');
+            }
+
+            // Activate / disactivate prev & next buttons
+            if($carousel.find('.m-prev, .m-next').length) {
+                $carousel.find('.m-prev, .m-next').removeClass('x-disabled');
+                if(index == 1)
+                    $carousel.find('.m-prev').addClass('x-disabled');
+                else if(index == $slides.length)
+                    $carousel.find('.m-next').addClass('x-disabled');
+            } 
+
+            // Lazy load
+            $slides.eq(index-1).find('img[data-lazy-src]')
+                .attr('src', function(){ return $(this).attr('data-lazy-src'); })
+                .removeAttr('data-lazy-src');
+        }
+
+        // Init carousels events handlers
+        $('.m-carousel').each(function(){
+            carouselEventsHandler($(this), false);
+        });
+        $('.m-carousel').on('beforeSlide', function(e, oldI, newI){
+            carouselEventsHandler($(this), newI);
+        });
+
+        // Handle data-href links
+        $('*[data-href]').each(function(){
+            var $this =$(this);
+            if(!$this.closest('a').length)
+                $this.wrap($('<a>').attr('href', $this.attr('data-href')));
+        });
+
+        // Remove validation highlight when start typing
+        $('.formError input').one('keyup', function(){
+            $(this).closest('.formError').removeClass('formError');
+                /// .find('.errorMsg').hide();
+        });
+    })(Mobify.$);
+
+    // If data misses happen, reveal them in a separate element so that
+    // automated tools like Selenium could pick them up
+    Mobify.$(function(){
+        var warnings = [];
+        var warnSource = Mobify.evaluatedCont.root.warnings || {};
+        for (var key in warnSource) {
+            if (warnSource.hasOwnProperty(key)) warnings.push(key);
+        }
+
+        if (warnings.length)
+            Mobify.$('<div id="x-mobify-warnings" style="display: none">')
+                .text(warnings.join(' '))
+                .appendTo(Mobify.$(document.body));
+    });       
+{/script}

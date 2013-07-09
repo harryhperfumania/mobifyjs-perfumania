@@ -1,0 +1,236 @@
+// ==========================================================================
+// 	BUTTONS
+// ==========================================================================
+//
+// 	Though we have a button mixin, it's better to use an extend to save on lines
+// 	when compiled.
+//
+// 	ex:	@extend .x-button;
+//		rather than @include button;
+//
+	@mixin button {
+		display: inline-block;
+		margin: $margin $margin/2 0 0;
+		padding: $margin $margin+$margin/3;
+		background-color: $light;
+		border-width: 1px;
+		border-style: solid;
+		border-color: $border;
+		color:$dark;
+		line-height: 1.3;
+		font-size: $text+1;
+		font-weight: bold;
+		text-align: center;
+		@include light-gradient;
+		@include border-radius($rounded);
+		@include text-shadow(0 1px 0 white);
+	}
+
+	.x-button, .x-btn, input[type=submit], button {
+		@include button;
+	}
+
+// 	COLOURS ===================================
+// 	Combine with others to get certain colours
+// 	ex:	@extend .x-button;
+//		@extend .x-dark-button;
+
+	.x-dark-button, .x-dk-btn {
+		@include background-image(linear-gradient(lighten($xblockgray, 10%), $xblockgray));
+		@include box-shadow(inset 0 0 1px rgba(black,.1));
+		border-color:darken($med, 10%);
+		color: white;
+		@include text-shadow(0 1px 0 darken($xblockgray, 1%));
+	}
+
+	.x-dark-button-invert, .x-dk-btn-invert {
+		@include background-image(linear-gradient(bottom, lighten($xblockgray, 10%), $xblockgray));
+		@include box-shadow(inset 0 0 1px rgba(black,.1));
+		border-color:darken($med, 10%);
+		color: white;
+		@include text-shadow(0 1px 0 darken($xblockgray, 1%));
+	}
+
+	.x-brand-button, .x-brand-btn {
+		background-color: $brand;
+		@include brand-gradient;
+		color: white;
+		@include text-shadow(0 1px 0 $dark-brand);
+	}
+
+	.x-accent-button, .x-accent-btn {
+		background-color: $accent;
+		@include accent-gradient;
+		color: white;
+		@include text-shadow(0 1px 0 $dark-accent);
+	}
+
+// 	SIZES & STYLES ================================
+// 	Combine with colours to get a certain look
+// 	ex:	@extend .x-button;
+//		@extend .x-dark-button;
+//		@extend .x-large-button;
+
+	.x-large-button, .x-lg-btn {
+		display: block;
+		width: 100%;
+		margin: $margin 0;
+		padding: $margin $margin*1.5;
+		font-size: $xlarge-text;
+		font-weight: bold;
+		@include text-shadow(0 1px 0 darken($xactive, 1%));
+	}
+
+	.x-small-button {
+		padding: $margin - 2 $margin;
+		font-size: $small-text;
+		color:$gray;
+		font-weight: bold;
+		&:visited {
+			color: $gray;
+		}
+	}
+
+	.x-plain-button, .x-plain-btn {
+		border-width: 0;
+		background-image: none;
+		@include box-shadow(none !important);
+	}
+
+	.x-shine-button, .x-shine-btn {
+		@include accent-gradient;
+	}
+
+	.x-disabled-button {
+		@include background-image(linear-gradient(lighten($med, 10%), lighten($med, 20%)));
+		color:$light;
+		@include text-shadow(0 -1px 0 $med);
+		pointer-events:none;
+	}
+
+	.x-action-button {
+		// Green button used for Adding to cart
+		background: $xactive;
+		@include background-image(linear-gradient($xactive, darken($xactive, 5%)));
+        border: solid 1px $xctive-dark;
+        color: white;
+        @include text-shadow(0 1px 0 $xctive-dark);
+        &:link,
+        &:visited,
+        &:hover,
+        &:active {
+        	color: white;
+        }
+	}
+
+	.x-primary-button {
+		// Green button with larger font and carat used for login, processing to checkout etc.
+		@extend .x-action-button;
+		@extend .x-large-button;
+
+		&:after {
+        	position: relative;
+            top: -1px;
+        	text-indent: $margin;
+            font-size: 0.8em;
+            @include x-icon-smarrowright;
+        }
+
+        &:active,
+		&:visited {
+			color: #fff;
+		}
+	}
+
+	.x-promo-button {
+		// Plain pink, used for discounts highlight
+		@extend .x-button;
+		background: $xlightimportant;
+		border:none;
+		color:white;
+		font-size:$text+1;
+		@include text-shadow(none);
+		&:active {
+			color: #fff;
+			background: darken($xlightimportant, 4%);
+		}
+	}
+
+	.x-color-button {
+		// a promo button on home page, colored by inline css background property
+        width: 100%;
+        padding-left:$margin;
+        padding-right:$margin;
+        overflow: hidden;
+        border: none;
+       	background: $xlightimportant;
+       	@include background-image(linear-gradient(rgba(white,.05), rgba(black,.1)));
+       	@include box-shadow(inset 0 0 1px rgba(black, .2));
+       	color:white;
+       	@include text-shadow(0 1px 0 rgba(black,.25));
+        &.x-active,
+        &:active,
+		&:visited {
+        	color:white;
+        }
+	}
+
+	.x-back-button {
+		display: inline-block;
+		margin: $margin 0 $margin*1.5;
+		color: $gray;
+		@extend .x-button;
+		@extend .x-small-button;
+	}
+
+// SWING BUTTONS
+// <ul class="x-swing-buttons">
+// 		<li><a href="#" class="x-button">Button 1</a></li>
+// 		<li><a href="#" class="x-button">Button 2</a></li>
+// </ul>
+
+.x-swing-buttons {
+	@include kill-list;
+	display: inline-block;
+	width: 100%;
+	margin-top: $margin/2;
+
+	li {
+		float: left;
+		width: 50%;
+		&:last-child {
+			float: right;
+		}
+
+		a.x-button {
+			width: 100%;
+			margin: 0;
+			padding:$margin $margin/2;
+			overflow: hidden;
+			color: $xdark;
+			font-size:$text;
+			text-overflow:ellipsis;
+			white-space: nowrap;
+
+			&.x-active {
+				@extend .x-dark-button-invert;
+				color: white;
+			}
+		}
+
+		&:first-child a.x-button {
+			@include border-radius($rounded 0 0 $rounded);
+			border-right:none;
+			&.x-active {
+				@include box-shadow(inset -2px 0 2px rgba(black,.1));
+			}
+		}
+		&:last-child a.x-button {
+			@include border-radius(0 $rounded $rounded 0);
+			border-left:none;
+			&.x-active {
+				@include box-shadow(inset 2px 0 2px rgba(black,.1));
+			}
+		}
+	}
+}

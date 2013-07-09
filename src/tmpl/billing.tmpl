@@ -1,0 +1,50 @@
+{>root/}
+
+{<main}
+	{#content}
+		{title}
+
+		{form|openTag|s}
+			{hidedenFields}
+
+			{form|innerHTML|s}
+
+			{#billingSection}
+				<section class="m-accordion x-check-accordion x-subscribe-option">
+					<div class="m-item">
+						<h3 class="m-header">{title}</h3>
+						<div class="m-content">
+							<div class="m-inner-content x-global-padding">{description}</div>
+						</div>
+					</div>
+				</section>
+			{/billingSection}
+
+			{#subscribeOption}
+				<section class="m-accordion x-block-accordion x-subscribe-option">
+					<div class="m-item">
+						<h3 class="m-header">{title}</h3>
+						<div class="x-main-field x-global-padding">{main}</div>
+						<div class="m-content">
+							<div class="m-inner-content x-global-padding">{description}</div>
+						</div>
+					</div>
+				</section>
+			{/subscribeOption}
+
+			{submitButton}
+
+		{form|closeTag|s}
+		<hr/>
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+	{%script}
+	 	(function($) {
+
+	 	})(Mobify.$);
+	{/script}
+{/scripts}

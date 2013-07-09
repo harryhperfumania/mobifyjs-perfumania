@@ -1,0 +1,297 @@
+<html>
+<head>
+	<title>Defaults Testing File</title>
+	<link rel="stylesheet" type="text/css" href="styleguide.css" />
+    <meta name='viewport' content='initial-scale=1, maximum-scale=1' />
+	<style>
+		body {
+			background: #EEE;
+		}
+		.container {
+			max-width: 480px;
+			margin: 0 auto;
+			background: #FFF;
+		}
+		/* Just for jokes/Easter egg */
+		input[type=radio] + label span {
+			display: none;
+		}
+		input[type=radio]:checked + label span {
+			display: inline;
+			padding: 0 0 0 5px;
+			color: red;
+			font-style: italic;
+		}
+	</style>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="js/accordion.js"></script>
+	<script src="js/carousel.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('.m-accordion').accordion();
+			$('.m-carousel').carousel();
+		});
+	</script>
+</head>
+
+<body>
+
+<div id="x-main" class="container">
+
+	<div id="colors">
+		<h1>(This is an h1) Colours</h1>
+
+		<span class="neutral">$xlight</span>
+		<span class="neutral">$light</span>
+		<span class="neutral">$med</span>
+		<span class="neutral">$dark</span>
+		<span class="neutral">$xdark</span>
+		<div class="neutral gradient">@include light-gradient;</div>
+		<div class="neutral gradient">@include dark-gradient;</div>
+
+		<div class="brand">$brand</div>
+		<span class="brand">$light-brand</span>
+		<span class="brand">$dark-brand</span>
+		<div class="brand gradient">@include brand-gradient;</div>
+
+		<div class="accent">$accent</div>
+		<span class="accent">$light-accent</span>
+		<span class="accent">$dark-accent</span>
+		<div class="accent gradient">@include accent-gradient;</div>
+	</div>
+
+	<hr />
+	
+	<h2>This is an h2 header.</h2>
+
+	<p>
+		<em>This</em>, this right here is a paragraph containing nothing in particular. And text! Look at all of this text, which is the <strong>$xdark</strong> colour. Fascinating isn't it? Filled with brilliance. Did you know the Earth is round? It is. What are you, some sort of Creationist? <a href="#">And this is a link, which is <strong>$brand</strong>.</a>
+	</p>
+
+	<h3>This is an h3 header, which is the same as h4, h5, and h6.</h3>
+	<div style="overflow: hidden;">
+		<div style="float: left; width: 50%;">
+			<ol>
+				<li>Beep</li>
+				<li>Beep</li>
+				<li>Beep</li>
+				<li>Beep</li>
+			</ol>
+		</div>
+
+		<div style="float: left; width: 50%;">
+			<ul>
+				<li>Boop</li>
+				<li>Boop</li>
+				<li>Boop</li>
+				<li>Boop</li>
+			</ul>
+		</div>
+	</div>
+
+	<hr style="clear: both;"/>
+
+	<ul id="accordion" class="m-accordion icons">
+		<li class="m-item">
+			<h3 class="m-header">
+				<a>Accordion</a>
+			</h3>
+			<div class="m-content">
+				<div class="m-inner-content">
+					<p>To alter the look and feel of the accordion, edit the module <em>accordionTheme</em>.</p>
+
+					<ul class="links">
+						<li><a href="#accordion">Link</a></li>
+						<li><a href="#accordion">Link</a></li>
+						<li><a href="#accordion">Link</a></li>
+						<li><a href="#accordion">Link</a></li>
+						<li><a href="#accordion">Link</a></li>
+						<li><a href="#accordion">Link</a></li>
+						<li><a href="#accordion">Link</a></li>
+					</ul>
+				</div>
+			</div>
+		</li>
+		<li class="m-item">
+			<h3 class="m-header">
+				<a>General Icons</a>
+			</h3>
+			<div class="m-content">
+				<div class="m-inner-content">
+					<ul class="icons">
+						<li class="plus">plus</li>
+						<li class="minus">minus</li>
+						<li class="delete">delete</li>
+						<li class="home">home</li>
+						<li class="user">user</li>
+						<li class="settings">settings</li>
+						<li class="refresh">refresh</li>
+						<li class="share">share</li>
+						<li class="heart">heart</li>
+						<li class="half-heart">half-heart</li>
+						<li class="female-user">female-user</li>
+						<li class="mic">mic</li>
+						<li class="volume">volume</li>
+						<li class="folder">folder</li>
+						<li class="retweet">retweet</li>
+						<li class="unlock">unlock</li>
+						<li class="cabinet">cabinet</li>
+						<li class="flag">flag</li>
+						<li class="chat-alt">chat-alt</li>
+						<li class="bookmark">bookmark</li>
+						<li class="price">price</li>
+						<li class="rightarrow">rightarrow</li>
+					</ul>
+					<ul class="icons">
+						<li class="reply">reply</li>
+						<li class="lock">lock</li>
+						<li class="email">email</li>
+						<li class="edit">edit</li>
+						<li class="video">video</li>
+						<li class="location">location</li>
+						<li class="globe">globe</li>
+						<li class="map">map</li>
+						<li class="upload">upload</li>
+						<li class="download">download</li>
+						<li class="volume-low">volume-low</li>
+						<li class="signpost">signpost</li>
+						<li class="user">user</li>
+						<li class="beaker">beaker</li>
+						<li class="sync">sync</li>
+						<li class="music">music</li>
+						<li class="print">print</li>
+						<li class="warning">warning</li>
+						<li class="chats">chats</li>
+						<li class="bookmark-alt">bookmark-alt</li>
+						<li class="uparrow">uparrow</li>
+						<li class="downarrow">downarrow</li>
+					</ul>
+					<ul class="icons">
+						<li class="cart">cart</li>
+						<li class="cart-alt">cart alt</li>
+						<li class="mobile">mobile</li>
+						<li class="tablet">tablet</li>
+						<li class="desktop">desktop</li>
+						<li class="link">link</li>
+						<li class="calendar">calendar</li>
+						<li class="star">star</li>
+						<li class="picture">picture</li>
+						<li class="alert">alert</li>
+						<li class="volume-high">volume-high</li>
+						<li class="pencil">pencil</li>
+						<li class="users">users</li>
+						<li class="repeat">repeat</li>
+						<li class="undo">undo</li>
+						<li class="inbox">inbox</li>
+						<li class="star-half">star-half</li>
+						<li class="chat">chat</li>
+						<li class="chats-alt">chats-alt</li>
+						<li class="price-tag">price-tag</li>
+						<li class="leftarrow">leftarrow</li>
+					</ul>
+					<p style="clear: both;">Please see larger guide for complete set of icons. Or refer to the <em>iconfont</em> module.</p>
+				</div>
+			</div>
+		</li>
+		<li class="m-item">
+			<h3 class="m-header">
+				<a>Social Icons</a>
+			</h3>
+			<div class="m-content">
+				<div class="m-inner-content">
+					<ul class="icons">
+						<li class="facebook">Facebook</li>
+						<li class="fblike">FB Like</li>
+						<li class="googleplus">Google+</li>
+						<li class="email2">Email</li>
+						<li class="twitter">Twitter</li>
+						<li class="youtube">Youtube</li>
+						<li class="vimeo">Vimeo</li>
+						<li class="pinterest">Pinterest</li>
+						<li class="linkedin">LinkedIn</li>
+						<li class="rss">RSS</li>
+					</ul>
+					<p style="clear: both;">Please see larger guide for complete set of icons. Or refer to the <em>iconfont</em> module.</p>
+				</div>
+			</div>
+		</li>
+	</ul>
+
+	<hr />
+
+	<form id="form">
+		<fieldset>
+			<legend>This is an example of a form</legend>
+			<div>
+				<label for="name">Name</label>
+				<input type="text" name="name" />
+			</div>
+			<div>
+				<label for="email">Email</label>
+				<input type="email" name="email" />
+			</div>
+			<div>
+				<label for="phone">Phone Number</label>
+				<input type="tel" name="phone" />
+			</div>
+			<div>
+				<label for="country">Which country do you live in?</label>
+				<select name="country">
+					<option>Please select a country</option>
+					<option>Canada</option>
+					<option>Not Canada</option>
+				</select>
+			</div>
+			<div>
+				<label for="circle">Do you like cats?</label>
+				<input type="radio" checked name="circle" /> <label>Yes</label>
+				<input type="radio" name="circle" /> <label>No 
+					<span>You are a fool!</span></label>
+			</div>
+			<div>
+				<label for="check">What else do you like?</label>
+				<input type="checkbox" checked name="check" /> <label>Birds</label>
+				<input type="checkbox" name="check" /> <label>Dogs</label>
+				<input type="checkbox" name="check" /> <label>Fish</label>
+			</div>
+			<div>
+				<label for="words">Tell us more:</label>
+				<textarea name="words"></textarea>
+			</div>
+			<div id="buttons">
+				<input type="submit" value="I'm a button">
+				<button>And so am I!</button>
+				<a href="#buttons" class="x-button">I look like a button, but I'm not really.</a>
+				<button class="x-dark-button">I'm a dark button</button>
+				<button class="x-accent-button">I'm an accent button</button>
+				<button class="x-accent-button x-plain-button">I'm a plain &amp; accent button</button>
+				<button class="x-large-button x-brand-button x-shine-button">I'm a large, shiny brand button</button>
+			</div>
+		</fieldset>
+	</form>
+
+	<!-- <div class="m-carousel m-fluid m-carousel-photos">
+		<div class="m-carousel-inner">
+			<div class="m-item m-active">
+				Hey.
+			</div>
+			<div class="m-item">
+				Hey.
+			</div>
+			<div class="m-item">
+				Hey.
+			</div>
+		</div>
+		<div class="m-carousel-controls m-carousel-bulleted">
+			<a href="#" data-slide="prev">Previous</a>
+			<a href="#" data-slide="1" class="m-active">1</a>
+			<a href="#" data-slide="2">2</a>
+			<a href="#" data-slide="3">3</a>
+			<a href="#" data-slide="next">Next</a>
+		</div>
+	</div> -->
+</div>
+
+</body>
+</html>

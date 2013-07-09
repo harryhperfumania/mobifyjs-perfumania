@@ -1,0 +1,32 @@
+.x-pagination {
+	margin: $margin*1.5 0;
+	.x-previous-page,
+	.x-next-page {
+		&:before {
+			padding:3px $margin;
+			color:lighten($med,15%);
+			font-size: 20px;
+		}
+	}
+	.x-previous-page {
+		float: left;
+		&:before {
+			@include x-icon-arrowleft;
+		}
+	}
+	.x-next-page {
+		float: right;
+		&:before {
+			@include x-icon-arrowright;
+		}
+	}
+
+	.x-page-select {
+		margin: 0 $margin*3;
+		text-align: center;
+		select {
+			padding-bottom: 7px;
+			padding-top: 7px;
+		}
+	}
+}

@@ -1,0 +1,106 @@
+{>root/}
+
+{<main}
+	{#content}
+	
+		{?espot}
+			{espot}
+			<hr class="espot-hr" />
+		{/espot}
+
+		{?promoCarousel}
+			<div class="m-carousel m-fluid x-promos-carousel">
+				<ul class="m-carousel-inner">
+					{#promoCarousel}<li class="m-item">{slide}</li>{/promoCarousel}
+				</ul>
+				<div class="m-carousel-controls">
+				    <a class="m-prev icon-arrowleft" href="#" data-slide="prev"></a>
+				    <a class="m-next icon-arrowright" href="#" data-slide="next"></a>
+
+				    <h2 class="x-carousel-title"><em>&nbsp;Loading&hellip;</em></h2>
+
+				    <div class="m-carousel-bulleted">
+				    	{#promoCarousel}<a href="#" data-slide="{id}"></a>{/promoCarousel}
+				    </div>
+				</div>
+			</div>
+		{/promoCarousel}
+
+		<div class="x-grid x-shopping-nav">
+			{navDropdowns}
+			{navCategories}
+		</div>
+
+		<hr />
+
+		{productsCarousel}
+
+		<hr />
+
+		<div class="x-grid x-promo-buttons">
+			{promoButtons}
+		</div>
+
+		<div class="x-promo-banners">
+			{promoBanners}
+		</div>
+
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+	{%script}
+		(function($) {
+			var $eSpots =  $('#headerEspot ul li'),
+				$promoCarousel = $('.x-promos-carousel'),
+				rotateInterval = 10000,
+				promoCarouselTimer,
+				espotTimer;
+
+			var espotRotate = function() {
+				// get current position
+				var $activeEspot = $eSpots.filter('.x-active'),
+					index = $activeEspot.index();
+				
+				// rotate espot
+				$activeEspot.removeClass('x-active');
+				if(index+1 < $eSpots.length)
+					$eSpots.eq(index+1).addClass('x-active');
+				else
+					$eSpots.first().addClass('x-active');
+
+				setEspotRotate();
+			}
+			var setEspotRotate = function() {
+				espotTimer = window.setTimeout(espotRotate, rotateInterval);
+			}
+
+			var carouselRotate = function() {
+				if($promoCarousel.find('li.m-item').index($('.m-active')) == $promoCarousel.find('li').length-1)
+					$promoCarousel.carousel('move', 1);
+				else
+					$promoCarousel.carousel('next');
+			}
+
+			var setCarouselRotate = function() {
+				promoCarouselTimer = window.setTimeout(carouselRotate , rotateInterval);
+			}
+			var unsetCarouselRotate  = function() {
+				window.clearTimeout(promoCarouselTimer);
+			}
+
+			$eSpots.first().addClass('x-active');
+			setEspotRotate();
+
+			setCarouselRotate();
+
+			$promoCarousel.on('beforeSlide', function(){
+				unsetCarouselRotate();
+				setCarouselRotate();
+			});
+
+		})(Mobify.$);
+	{/script}
+{/scripts}

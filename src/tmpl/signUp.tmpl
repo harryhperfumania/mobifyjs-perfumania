@@ -1,0 +1,147 @@
+{>root/}
+
+{<main}
+	{#content}
+		{title}
+		{error}
+		
+		{form|openTag|s}
+			{!hidedenFields!}
+			
+			{#rewardOption}
+				<section class="m-accordion x-block-accordion x-reward-option {?billingSection}x-hide{/billingSection}">
+					<div class="m-item">
+						<h3 class="m-header">{title}</h3>
+						<div class="x-main-field">{teaser}</div>
+						<div class="m-content">
+							<div class="m-inner-content x-global-padding x-extra-block">{content}</div>
+						</div>
+					</div>
+				</section>
+			{/rewardOption}
+
+			{form|innerHTML|s}
+
+			{#billingSection}
+				<hr/>
+				<section class="x-billing-address">
+					<fieldset>
+						{title}
+						{switcher}
+						{content}
+					</fieldset>
+				</section>
+				<hr/>
+			{/billingSection}
+
+			{#subscribeOption}
+				<section class="m-accordion x-block-accordion x-subscribe-option">
+					<div class="m-item">
+						<h3 class="m-header">{title}</h3>
+						{?billingSection}{:else}<div class="x-main-field">{teaser}</div>{/billingSection}
+						<div class="m-content">
+							<div class="m-inner-content">
+								{?billingSection}<div class="x-main-field">{teaser}</div>{/billingSection}
+							 	{?billingSection}
+							 		{:else}
+									 	<div class="x-extra-block x-global-padding">
+											{content}
+										</div>
+								{/billingSection}
+							</div>
+						</div>
+					</div>
+				</section>
+			{/subscribeOption}
+
+			{submitButton}
+			{backButton}
+
+		{form|closeTag|s}
+		{ajaxUpdateURL}
+		<hr/>
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+
+	{%script}
+		var $form = Mobify.$('form.x-address-form'),
+ 			$sameAsShipping = $form.find('.m-content input#sameAsShipping'),
+ 			$additionalContainer = $form.find('#additionalInfo');
+
+ 		// Move Rewards block down on Signup page in checkout flow
+ 		if(!$form.hasClass('#registrationForm')) {
+ 			// Billing and shipping address page
+ 			$('.x-reward-option')
+ 				.insertBefore('.x-subscribe-option')
+ 				.removeClass('x-hide')
+ 				.attr({
+ 						'id':$additionalContainer.attr('id'),
+ 						'style':$additionalContainer.attr('style')
+ 					});
+ 		}
+
+ 		// Fix form fields layout on a) page load b) after content updated with AJAX
+		var fixFormLayout = function(){	
+			// Hide Address 2
+            $form.find('ul li:has(#address2[value=""], #ship_address2[value=""])').hide();
+
+            // Group hidden inputs 
+			$form.find('ul.remove-default').each(function(){
+            	Mobify.$(this).find('input[type=hidden]').prependTo(Mobify.$(this));
+            })
+
+            // Group checkbox inputs with labels
+            $form.find('.checkbox').addClass('x-input-group');
+
+            // Add columns layout to city/country/state/zip
+            $form.find('li:has(#city, #ship_city, #country, #ship_country, #state, #ship_state, #zipCode, #ship_zipCode, #datepicker, label[for=gender])').addClass('x-half');
+            $form.find('li:has(#country, #ship_country, #zipCode, #ship_zipCode, label[for=gender])').addClass('x-last');
+
+            // Better placing for validation errors
+            $form.find('.formError').each(function(){
+                var $self = Mobify.$(this);
+                if($self.hasClass('x-half'))
+                	// show validation errors below the field in 2-column layout
+                    $self.find('.errorMsg').appendTo($self);
+                else
+                	// Show validation errors after the labels
+                    $self.find('.errorMsg').insertAfter($self.find('label'));
+            })
+
+             // Remove colon sign from labels
+            $form.find('label').contents()
+                .filter(function(){
+                    return this.nodeType === 3 && Mobify.$.trim(this.nodeValue) !== '';
+                })
+                .each(function(){
+                    Mobify.$(this).text(Mobify.$(this).text().replace(':',''));
+                });
+
+            // Fix inputs types
+            $form.find('input[type=text]#phone, input[type=text]#ship_phone').attr({'type': 'tel', 'maxlength': 10});
+            $form.find('input[type=text]#email1, input[type=text]#ship_email1').attr('type', 'email');
+
+            // remove empty labels
+        	$form.find('li:has(#address2, #ship_address2, #baddress, #saddress)').find('label').remove();
+		}
+
+		fixFormLayout();
+
+	{/script}
+
+	{content.scripts}
+	
+	{%script}
+	 	(function($) {
+			// update Quick look popup
+	        jQuery('body').ajaxComplete( function(_, xhr, settings) {
+	            if (/AjaxUserAddressFormView/.test(settings.url)) {
+	                fixFormLayout();
+	            }
+	        });
+	 	})(Mobify.$);
+	{/script}
+{/scripts}

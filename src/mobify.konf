@@ -1,0 +1,1520 @@
+{>"/base/lib/base_konf.konf"/}
+
+{<tmpl}
+    {_SUPER_}
+    // Helper functions
+    var ProductionEnv = /www.perfumania.com/.test(window.location.host);
+
+    var productsCarousel = function(context, $items, perPage) {
+        // Create custom products carousel with 4 products per slide 2 x 2
+        // Use template _productsCarousel.tmpl to build UI
+        if(!$items.length)
+            return false;
+
+        var $ = Mobify.$,
+            slides = [];
+
+        $items.removeAttr('style');
+        $items.addClass('x-product-thumbnail');
+        $items.find('img').addClass('x-image-thumbnail x-lazy');
+        $items.find('span[data-mobify-text]').each(function(){
+            var $self = $(this),
+                mobifyAttr = $self.attr('data-mobify-text');
+            if(mobifyAttr.length > 1)
+                $self.html(mobifyAttr);
+        });
+
+        for(var i=0; i<$items.length/perPage; i++) {
+            slides.push(
+                $items.slice(i * perPage, i * perPage + perPage)
+            );
+        }
+        slides[0].find('img').removeClass('x-lazy');
+        // return slides;
+        // Load external template (_productsCarousel.tmpl)
+        return context.tmpl('_productsCarousel', {'slides' : slides});
+    };
+
+    var breadcrumbs = function($breadcrumbs, show_last_item) {
+        if(!$breadcrumbs.length)
+            return;
+
+        $breadcrumbs.addClass('x-breadcrumbs');
+        if(!show_last_item)
+            $breadcrumbs.find('li.last:has(span)').remove();
+        return $breadcrumbs;
+    }
+    // Generate stati breadcrumb with the same layout as dynamic, but only 2 items: Home and custom page
+    var static_breadcrumbs = function(text) {
+        return Mobify.$('<div class="x-breadcrumbs"><ul>'
+                        +'  <li><a href="/">Home</a></li>'
+                        +'  <li><span>' + text + '</span></li>'
+                        +'</ul></div>');
+    }
+
+    var orderFormTransform = function($form) {
+        var $ = Mobify.$,
+            $formFields = $form.find('.form-fields'),
+            $attributes = $formFields.find('.attributes'),
+            $buttons = $formFields.find('.buttons');
+
+        if(!$formFields.length || $attributes.hasClass('x-attributes'))
+            return;
+
+        $formFields.hide();
+
+        // Remove savings and prices
+        $formFields.find('.savings, .prices').hide();
+
+        // Size/quantity attributes
+        $attributes.addClass('x-attributes');
+
+        // Hide empty Size line
+        $attributes.find('li.attribute-size:has(input.selected[type=hidden])').hide();
+
+        var $qty = $attributes.find('input#qty');
+        qtyTransform($qty, 1); // It's in konf
+
+        // Order button and unavailable disabled button
+        $buttons
+            .addClass('x-add-to-cart')
+            .find('.add-to-cart-button')
+                .addClass('x-button x-order-button')
+                .end()
+            .find('div.unavailable-message')
+                .addClass('x-button x-disabled-button')
+                .end()
+            .prependTo($formFields);
+
+        $formFields.show();
+    }
+
+
+    // Quantity input to dropdown transformation
+    var qtyTransform = function($qtyInputs, start) {
+        var options = '';
+        for(var i=start; i<100; i++) {
+            options += '<option value="' + i + '">' + i + '</option>';
+        }
+
+        $qtyInputs.each(function(){
+            var $self = Mobify.$(this),
+                $qtySelect = Mobify.$('<select>');
+
+
+            $qtySelect.attr({
+                'class': 'x-qty-select',
+                'name': $self.attr('name'),
+                'id': $self.attr('id')
+            });
+            if($self.attr('disabled')) {
+                $qtySelect.attr('disabled', $self.attr('disabled'));
+            }
+
+            $qtySelect.html(options);
+            $qtySelect.find('option[value="' + $self.val() + '"]').attr('selected',true);
+            $self.replaceWith($qtySelect);
+        });
+    }
+
+    var paginationTransform = function(paginationObj) {
+        // AB: Transform links pagination to dropdown
+        // Originally used in Epicurious
+
+        /*
+            required paginationObj (Object)
+            {
+                    'container' (Object),    // container selector
+                    'nextLink' (Object),     // next page link selector (if any)
+                    'backLink' (Object),     // back link selector (if any)
+                    'urlPattern' (String),   // any page URL with page number replaced to %page% and (optionally) offset number changed to %offset% + '1'
+                    'offsetStart' (Integer)  // 1 or 0 — on most pages offset starts with 1 (i.e. search results) but sometimes with 0 (i.e. sub-channel pages)
+                    'totalPages' (String),   // text representing the highest page number OR the highest page link available
+                    'currentPage' (String)   // text value of the current page
+                }
+        */
+
+        var $ = Mobify.$,
+            outputHTML = '';
+
+        if(!paginationObj || !paginationObj.container){
+            console.log('pagination object is empty', paginationObj);
+            return false;
+        }
+
+        paginationObj.currentPage = parseInt($.trim(paginationObj.currentPage).replace(/[^0-9]/g,''));
+        paginationObj.totalPages = parseInt($.trim(paginationObj.totalPages).replace(/[^0-9]/g,''));
+
+        if(paginationObj.currentPage > paginationObj.totalPages)
+            paginationObj.totalPages = paginationObj.currentPage;
+
+        // create dropdown options
+        for(var i=1; i<=paginationObj.totalPages; i++){
+            outputHTML += '<option value="' + i + '">' + i + '</option>';
+        }
+
+        paginationObj.container.addClass('x-pagination');
+        paginationObj.container.html('<div class="x-page-select"><span>Page </span><select data-url="' + paginationObj.urlPattern + '" data-offsetStart="' + paginationObj.offsetStart + '">' + outputHTML + '</select> of <strong>' + paginationObj.totalPages + '</strong></div>');
+
+        // Set current page selected
+        paginationObj.container.find('select option[value="' + paginationObj.currentPage + '"]')
+            .attr('selected','selected')
+            .attr('disabled','disabled');
+
+        // Add prev/next links
+        paginationObj.backLink.addClass('x-previous-page').text('').prependTo(paginationObj.container);
+        paginationObj.nextLink.addClass('x-next-page').text('').prependTo(paginationObj.container);
+
+        return true;
+    };
+
+    var _resizeImages = function(context, $content) {
+        // Include tracking only on production due to errors in Marin Track and Media Forge tag on staging domains
+        if(!ProductionEnv || !$content.length )
+            return false;
+
+        var $ = Mobify.$,
+            // Image profile for full device width (incl. landscape mode)
+            imgQuality = (context.data('config.HD') == '@2x') ? 65 : 90;
+
+        // Image profile for PDP large images
+        var profileFull = {
+            maxWidth: 460,
+            maxHeight: 320,
+            format: 'jpg',
+            quality: imgQuality
+        };
+
+        // Image profile for PDP large images
+        var profileLarge = {
+            maxWidth: 460,
+            maxHeight: 180,
+            format: 'jpg',
+            quality: imgQuality
+        };
+
+        // Image profile for large square thumbnails (e.g. product carousels, sub-category, search results)
+        var profileThumbnail = {
+            maxWidth: 200,
+            maxHeight: 120,
+            format: 'jpg',
+            quality: imgQuality
+        };
+
+        // Image icon for small square thumbnails (e.g. cart page)
+        var profileIcon = {
+            maxWidth: 90,
+            maxHeight: 120,
+            format: 'jpg',
+            quality: imgQuality
+        };
+
+        $content.find('img.x-image-icon, img.x-image-thumbnail').attr('x-src', function(){
+            return $(this).attr('x-src').replace(/(\d+)[s|r]\./g,'$1.');
+        });
+
+        $content.find('img.x-image-full').resizeImages(profileFull);
+        $content.find('img.x-image-large').resizeImages(profileLarge);
+        $content.find('img.x-image-thumbnail').resizeImages(profileThumbnail);
+        $content.find('img.x-image-icon').resizeImages(profileIcon);
+    };
+
+    var _lazyLoad = function ($images){
+        $images
+            .attr('data-lazy-src', function(){return Mobify.$(this).attr('x-src');})
+            .removeAttr('x-src');
+    };
+
+    var _combineScripts = function ($scripts){
+        // Use JazzCat only for production sit due to CDN exceptions with fake staging domains
+        if(ProductionEnv)
+            return $scripts.combineScripts();
+        else
+            return $scripts;
+    };
+
+    var mobifyAssets = function(context, $assets, $alternative) {
+        // Get .mobify-assets block or show desktop images if no assets block found
+        var $ = Mobify.$;
+
+        if(!$assets.length)
+            $assets = $alternative;
+        if($assets.is('img'))
+            $assets = $('<div>').html($assets);
+        if(!$assets.length)
+            return false;
+
+        // Add a class to container
+        // We remove width and style because sometimes this is a table and the site has hardcoded styles
+        $assets.addClass('x-assets-block')
+            .removeAttr('width')
+            .removeAttr('style');
+
+        $assets.find('img')
+            .removeAttr('style')
+            .removeAttr('height')
+            .removeAttr('width')
+            .addClass('x-image-large');
+
+        $assets.find('img[data-src]').each(function(){
+            $(this).attr('x-src', $(this).attr('data-src')).removeAttr('data-src');
+        });
+
+        //_resizeImages(context, $assets);
+        $assets.show();
+
+        return $assets;
+    }
+
+    var checkoutAddress = function($form) {
+        var $ = Mobify.$,
+            $address = $form.find('.orderAddrSection .addressDisplayContainer').remove();
+            return $address.map(function(){
+                var $self = $(this);
+                $self.find('a.button').addClass('x-button x-small-button');
+                return {
+                    'title': $self.find('h3').text().replace(':',''),
+                    'teaser': $self.find('ul li:nth-of-type(2)').text() + ',' + $self.find('ul li:nth-of-type(3)').text(),
+                    'content': $self.find('.addressDisplay')
+                }
+            });
+    };
+
+    var checkoutCart = function($form) {
+        var $ = Mobify.$,
+            $itemsSection = $form.find('#itemsSection'),
+            $items = $itemsSection.find('table.cart > tbody > tr:not(.last)');
+
+        if(!$form.length || !$items.length)
+            return;
+
+        // convert quantity input field into drop down
+        $items.find('td.qty input.text[type=hidden]').attr({'disabled':'disabled'});
+        qtyTransform($items.find('td.qty input.text'), 0);
+
+        // On Checkout Thank you page there's only text node.
+        $items.find('td.qty')
+            .filter(function(){
+                return $(this).find('*').length==0
+            })
+            .wrapInner('<span class="x-qty-text"/>');
+
+        // add image resizing via cloud
+        $items.find('td.item .prodThumb img').addClass('x-image-icon');
+        // add remove button styles
+        $items.find('td.remove a.remove').addClass('x-button x-small-button x-remove-button');
+        // add update button
+        var $buttonSection = $form.find('.checkoutButtonContainer'),
+            $update = $buttonSection.find('.update-cart button').removeAttr('class').addClass('x-button x-small-button x-update-button');
+
+        // Parse table layout
+        return $items.map(function(){
+            var $_item = $(this);
+            return {
+                'image': $_item.find('td.item .prodThumb'),
+                'title': $_item.find('td.item .item > span:first-child'),
+                'msrp': $_item.find('td.unit').contents(),
+                'ourPrice': $_item.find('td.total').first().html(),
+                'yourPrice': $_item.find('td.total').last().html(),
+                'discount': $_item.find('td.item .promotions li').text(),
+                'number': $_item.find('td.item .item span.partNumber'),
+                'quantity': $_item.find('td.qty').contents(),
+                'update': $_item.find('td.qty select').length ? $update : false,
+                'remove': $_item.find('td.remove a.remove'),
+                'gift': $_item.find('td.remove *').length==0
+            }
+        });
+    };
+
+    // add nextAll and prevAll in Zepto
+    (function($){
+        var e = {
+            nextAll: function(s) {
+                var $els = $(), $el = this.next()
+                while( $el.length ) {
+                    if(typeof s === 'undefined' || $el.is(s)) $els = $els.add($el)
+                    $el = $el.next()
+                }
+                return $els
+            },
+            prevAll: function(s) {
+                var $els = $(), $el = this.prev()
+                while( $el.length ) {
+                    if(typeof s === 'undefined' || $el.is(s)) $els = $els.add($el)
+                    $el = $el.prev()
+                }
+                return $els
+            }
+        };
+
+        $.extend( $.fn, e )
+    })(Mobify.$);
+
+{/tmpl}
+
+{<konf} {
+
+'touchIcon': function(context) {
+    return context.data('config.configDir') + 'i/icon.png';
+},
+'unmobify': function(context) {
+    // Do not support Firefox mobile browser
+    return (/Firefox/.test(navigator.userAgent));
+},
+'OS': function(context) {
+    if (/Android/.test(navigator.userAgent))
+        return  {
+                    'name': 'android',
+                    'version': navigator.userAgent.match(/Android [\d+]{1,2}/)[0].replace('Android ','')
+                }
+    if (/iP(hone|od|ad)/.test(navigator.platform)){
+        // supports iOS 2.0 and later: <http://bit.ly/TJjs1V>
+        var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/),
+            iOSversion = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)];
+
+        return  {
+                    'name': 'ios',
+                    'version': iOSversion[0]
+                }
+    }
+    else
+        return false;
+},
+
+'mobileViewport': 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no',
+
+'header': {
+
+    'logo': function() {
+        var logo = $('#logoEspot a').addClass('x-logo')
+        $('.image-replace').remove()
+        return logo
+    },
+
+    'navmenu': function() {
+        var $navmenu = $('.catalog-links.menu-links > ul').removeAttr('class');
+
+        if(!$navmenu.length)
+            return;
+
+        $navmenu.find('ul, .clear').remove();
+        $('#headerLinks1 li').appendTo($navmenu);
+
+        // Transform menu in 2 columns
+        var col = Math.ceil($navmenu.find('li').length/2);
+        $navmenu = $navmenu.add($navmenu.clone());
+        $navmenu.eq(0).find('li').eq(col-1).nextAll().remove();
+        $navmenu.eq(1).find('li').eq(col).prevAll().remove();
+        return $navmenu
+    },
+
+    'cart': function() {
+        var $cart = $('#miniCartHdr');
+        if(!$cart.length)
+            return;
+
+        $cart.removeAttr('id').addClass('x-cart')
+        $cart.find('span:first-child').addClass('x-icon-cart').html('')
+        return $cart
+    },
+
+    'search': function() {
+        var $search = $('#headerSearchForm');
+        if(!$search.length)
+            return;
+
+        $search.addClass('x-search');
+        $search.find('label, legend, span').remove();
+        $search.find('#headerSearchField').attr('placeholder', 'Search').attr('value', '');
+        return $search
+    },
+
+    'progressBar': function() {
+        var $progressBar = $('#checkout-breadcrumbs');
+        if(!$progressBar)
+            return;
+
+        $progressBar.find('h3').remove();
+        $progressBar.find('ol li.active').prevAll().addClass('x-completed');
+        $progressBar.find('ol li.one .title').text('Billing and Shipping')
+
+        return $progressBar;
+    }
+},
+
+'footer': {
+    'menu': function() {
+        var $menu = $('#footerLinks2 ul, #footerLinks3 ul'),
+            $userLinks = $('#header').find('.welcome-logged-out .signIn a:last-of-type, '
+                                          +'.welcome-logged-in ul.welcome li:not(.last) a');
+
+        $userLinks.each(function(){
+            $('<li>').append($(this)).appendTo($menu.last());
+        });
+
+        $menu.find('a[href*="my-account"]').addClass('x-external').attr('target','_blank');
+        return $menu;
+    },
+    'social': function() {
+        var $socialLinks = $('#footerCommunityLinks a');
+        $socialLinks.attr('target','_blank');
+        return $socialLinks;
+    },
+    'copyright': function() {
+        return $('#copyrightEspot');
+    }
+},
+
+'content': function(context) {
+    return context.choose({
+        'templateName': 'home',
+
+        '!match': function(context) {
+             return $('#homeEspot5')
+         },
+        'espot': function(context) {
+            // We use some special formatting for espots
+            // the single line is split by ‘|’ into array and text between two “*” becomes red.
+            // Default string is hardcoded and will be replaced by data-mobify-text attribute in $container if any.
+
+            var $container = $('#header #headerEspot'),
+                $mobifyAttr = $container.find('[data-mobify-text]'),
+                featuresStr = "*Free U.S. Shipping* with $50 or more! | *Free Samples* with every order!",
+                featuresArr = [],
+                outputHTML = '';
+
+            if($mobifyAttr.length && $mobifyAttr.attr('data-mobify-text').length>0)
+                featuresStr = $mobifyAttr.attr('data-mobify-text');
+
+            featuresArr = featuresStr.split('|');
+            $.each(featuresArr, function(i){
+                // make text between two ‘*’ bold (red)
+                outputHTML += '<li>' + this.replace(/\*(.*)\*/, '<strong>$1</strong>') + '</li>';
+            });
+            
+            $container.html('<ul>' + outputHTML + '</ul>')
+            return $container
+        },
+        'promoCarousel': function(context) {
+            var $container = $('#mainarea #homeEspot1 .slides').remove();
+
+            // PER-107 Account for mobile specific images in main slider
+            // Find elements with data-mobify-image attribute and replace them with IMG element
+            $container.find('[data-mobify-image]').each(function(){
+                $self = $(this);
+
+                // If it is an image, we don't need to do much otherwise…
+                if(!$self.is('img')) {
+                    // Create image element with the same properties as original element
+                    var $img = $('<img/>');
+                    $.each($self.prop("attributes"), function(){
+                        $img.attr(this.name, this.value);
+                    });
+
+                    // Replace original element with IMG
+                    $self.replaceWith($img);
+                    $self = $img;
+                }
+
+                // $self should always be an image by now
+                $self.attr('x-src', $self.attr('data-mobify-image'));
+            });
+
+            // get slides
+            var $slides = $container.children('*[data-control-text]')
+            $slides.removeAttr('style') ///.removeAttr('width');
+
+
+            // PER-14
+            // Issue: when scaling the image slices table the image parts size is rounded and thus pieces don't match
+            // Solution: add image URL as a background to the cell with 100% width and height while keeping image invisible (for stretching the cell proportionally)
+            $slides.filter('table[data-control-text]').find('td:has(img)').each(function(){
+                var $_cell = $(this);
+                $_cell
+                    .addClass('x-slice')
+                    .css('background-image','url(' + $_cell.find('img').attr('x-src') + ')');
+            });
+
+            // Apply image resize to single image slides
+            $container.find('img').addClass('x-image-full');
+            _resizeImages(context, $container);
+
+            return $container.children('*[data-control-text]').map(function(i){
+                return {
+                    'slide': $(this),
+                    'id': i+1
+                };
+            });
+        },
+        'navDropdowns': function(context) {
+            var $navDropdowns = $('.shop-by-brand[id^="shop-by-brand"], .select-a-designer[id^="select-a-designer"]');
+            $navDropdowns.addClass('x-nav-block');
+            $navDropdowns.find('#selectADesignerForm select option:first-of-type').text('Shop by Designer');
+            return $navDropdowns;
+        },
+        'navCategories': function(context) {
+            var $navCategories = $('.catalog-side-links'),
+                split = Math.ceil($navCategories.find('ul li').length/2);
+
+            // Clone entire list
+            $navCategories = $navCategories.add($navCategories.clone());
+            // Remove last half of items in the 1st list
+            $navCategories.eq(0).find('ul li').slice(split).remove();
+            // and firstt half of items in the 2nd list
+            $navCategories.eq(1).find('ul li').slice(0,split).remove();
+            return $navCategories;
+        },
+        'productsCarousel': function(context) {
+            // Inject productsCarousel back into context in order images resize to work
+            return $('#homeEspot2').html(productsCarousel(context, $('#homeEspot2 ul li'), 4));
+        },
+        'promoButtons': function(context) {
+            // Inject productsCarousel back into context in order images resize to work
+            var $buttons = $('#homeEspot3, #homeEspot4, #homeEspot5, #homeEspot6');
+            $buttons.find('a img').each(function(){
+                var $self = $(this),
+                    $link = $self.parent();
+
+                $link.html($self.attr('data-mobify-text') ? $self.attr('data-mobify-text') : $self.attr('alt'));
+
+                $link.addClass('x-button x-color-button');
+                if($link.attr('data-mobify-color'))
+                    $link.css('background-color',$link.attr('data-mobify-color'));
+            });
+            $buttons.addClass('x-nav-block');
+            $buttons.find('a:not(.x-button)').remove();
+            return $buttons;
+        },
+        'promoBanners': function(context) {
+            return mobifyAssets(context, $('.mobify-assets'),  $('#homeEspot7'));
+        },
+        'scripts': function(context) {
+            var $scripts = $('script[x-src*="jquery.livequery.js"],'
+                            +'script[x-src*="searchResults.js"],'
+                            +'script[x-src*="common.js"]');
+            return _combineScripts($scripts);
+        }
+    },
+    {
+        'templateName': 'product',
+        '!container': function(context) {
+            return $('.mainarea-ProductDisplayView div.product-detail')
+        },
+        '!title': function(context) {
+            return $('h1.product-detail')
+        },
+        'breadcrumbs': function(context) {
+            return breadcrumbs($('div.breadcrumbs'), false);
+        },
+        'image': function(context) {
+            var $container = context.data('container'),
+                $image = $container.find('.product-photo');
+            $image.addClass('x-product-photo');
+            $image.find('img').addClass('x-image-large');
+            return $image;
+        },
+        'orderForm': function(context) {
+            var $form = context.data('container').find('form.add-to-cart-form');
+            orderFormTransform($form);
+            return $form;
+        },
+        'orderSpinner': function(context) {
+            return context.data('container').find('.loading-image');
+        },
+        'price': function(context) {
+            var $container = context.data('container'),
+                $form = context.data('orderForm'),
+                $promo = $container.find('.promo-container .promo a'),
+                $savings = $form.find('.form-fields').children('.savings, .prices').remove().show(),
+                $total = $savings.find('.promo .sale-price, .nopromo .price').remove();
+                $total_value = $total.find('.price-value');
+
+            // Ttoal price formatting
+            $total_value.html($total_value.html().replace('$','<abbr>$</abbr>'));
+
+            // Promotion
+            $promo.addClass('x-promo-button');
+
+            return {
+                'total': $total,
+                'promo': $promo,
+                'savings': $savings
+            }
+        },
+        'share': function(context) {
+            var $container = context.data('container'),
+                $shareBlock = $container.find('.product-links .addthis_toolbox'),
+                imgURL = window.location.origin + context.data('image').find('img').first().attr('x-src');
+
+            $shareBlock.html('<a class="addthis_button_facebook"></a><a class="addthis_button_pinterest_share"></a><a class="addthis_button_google"></a><a class="addthis_button_twitter"></a>');
+            return $shareBlock;
+        },
+        'details': function(context) {
+            var $container = context.data('container'),
+                $tabs = $container.find('.tabs > ul li a'),
+                $content = $container.find('.tab-container .tab-contents');
+
+            return $tabs.map(function(i){
+                return {
+                    'title': $(this).text(),
+                    'content': $content.eq(i)
+                }
+            });
+        },
+        'relatedProducts': function(context) {
+            var $container = $('#rightnav .product-list'),
+                $products = $container.find('.inner > ul > li');
+            if(!$products.length)
+                return false;
+
+            $products.parent().replaceWith(productsCarousel(context, $products, 2));
+            return $container;
+        },
+
+        'recommendedProducts': function(context) {
+            var $container = $('#mainarea .product-list'),
+                $products = $container.find('.inner > ul > li');
+            if(!$products.length)
+                return false;
+
+            $products.parent().replaceWith(productsCarousel(context, $products, 2));
+            return $container;
+        },
+
+        'scripts': function(context) {
+            var $scripts = $('script[x-src*="jquery.livequery.js"],'
+                            +'script[x-src*="jquery.toggleSpinner.js"],'
+                            +'script[x-src*="jquery.inventory.js"],'
+                            +'script[x-src*="jquery.ajaxForm.js"],'
+                            +'script[x-src*="jquery.togglePhoto.js"],'
+                            +'script[x-src*="jquery.togglePrice.js"],'
+                            +'script[x-src*="jquery.productDetail.js"],'
+                            +'script[x-src*="common.js"],'
+                            +'script[x-src*="addthis_widget.js"]');
+            return _combineScripts($scripts);
+        }
+    },
+    {
+        // for both search results and category pages
+        'templateName': 'category',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-CategoryDisplayView');
+        },
+        'breadcrumbs': function(context) {
+            var category = context.data('container').find('.product-list.category-featured-eSpot .inner > a.view-all').text().replace('View all ','');
+            return static_breadcrumbs(category);
+        },
+        'categoryBanner': function(context) {
+            return mobifyAssets(context, $('.mobify-assets'), context.data('container').find('.category-eSpot').first());
+        },
+        'navCategories': function(context) {
+            var $navCategories = $('#leftnav .catalog-subcat-side-links');
+            $navCategories.find('ul').addClass('x-quick-links');
+            return $navCategories;
+        },
+        'featuredTitle': function(context) {
+            return context.data('container')
+                            .find('.product-list.category-featured-eSpot .inner > h3')
+                            .first()
+                                .addClass('x-featured-title');
+        },
+        'list': function(context) {
+            var $container = context.data('container').find('.product-list.category-featured-eSpot'),
+                $items = $container.find('ul li');
+
+                $items.addClass('x-product-thumbnail');
+                $items.find('img.product-thumb').addClass('x-image-thumbnail');
+            return $items;
+        },
+        'moreButton': function(context) {
+            return context.data('container')
+                            .find('.product-list.category-featured-eSpot .inner > a.view-all')
+                            .addClass('x-button');
+        }
+    },
+    {
+        // for both search results and category pages
+        'templateName': 'list',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-CatalogSearchResultView');
+        },
+        'categoryBanner': function(context) {
+            return mobifyAssets(context, $('.mobify-assets'), $('div.breadcrumbs + img, div.breadcrumbs + table'));
+        },
+        'searchMsg': function(context) {
+            var $searchMsg = $('#searchMsg');
+
+            $searchMsg
+                .html($searchMsg.text().replace(/\"(.*)\"/g,'&ldquo;<strong>$1</strong>&rdquo;'))
+                .addClass('x-searchMsg');
+
+            return $searchMsg;
+        },
+        'breadcrumbs': function(context) {
+            var $breadcrumbs = breadcrumbs($('div.breadcrumbs').remove(), true);
+            if(context.data('searchMsg')) {
+                // Keep only 1st and last items for Search results
+                $breadcrumbs.find('li:nth-of-type(n+2):not(.last)').remove();
+            } else {
+                // Keep only 3 first items for sub-categories
+                $breadcrumbs.find('li:nth-of-type(n+4)').remove();
+            }
+
+            return $breadcrumbs;
+        },
+        'searchFacets': function(context) {
+            var $searchFacets = $('.search-facets'),
+                $removeFacet = $searchFacets.find('ul.remove-facet');
+            $searchFacets.addClass('m-item');
+            $searchFacets.find('h3').addClass('m-header x-toggle');
+            $searchFacets.find('h3 ~ *').wrapAll('<div class="m-content m-accordion x-facets-accordion" />');
+
+            // Move select items out of accordion lists
+            if($removeFacet.length) {
+                $removeFacet.addClass('x-remove-facets');
+                $removeFacet.prev('h4').remove();
+                $removeFacet.insertAfter($searchFacets.find('h3.m-header'));
+                $removeFacet.find('li a').addClass('x-button x-accent-button x-plain-button');
+            }
+
+            // Wrap in accordion layout
+            $searchFacets.find('h4').each(function(){
+                var $self = $(this),
+                    $next = $self.next('ul');
+
+                $self.addClass('m-header');
+                $self.add($next).wrapAll('<div class="m-item" />');
+                $next.wrap('<div class="m-content" />');
+            });
+
+            return $searchFacets;
+        },
+
+        'resultsPerPage': function(context) {
+            return $('#mainarea .pagination.top-pagination select.results-per-page');
+        },
+        'pagination': function(context) {
+            var $pagination = $('#mainarea .pagination.top-pagination'),
+                paginationObj = {
+                    'container': $pagination,
+                    'nextLink': $pagination.find('.pagination-links a.next'),
+                    'backLink': $pagination.find('.pagination-links a.prev'),
+                    'urlPattern': $pagination.find('.pagination-links a:first-of-type').attr('href').replace(/page=[0-9]+/, 'page=%page%'),
+                    'totalPages': $pagination.find('.pages .pageNumber:last-of-type').text(),
+                    'currentPage': $pagination.find('.pagination-links span.currentPage').text()
+                }
+
+            paginationTransform(paginationObj);
+            return $pagination;
+        },
+        'list': function(context) {
+            var $container = context.data('container').find('.product-list.search-results-list'),
+                $items = $container.find('ul li.row > ul > li');
+
+                $items.addClass('x-product-thumbnail');
+                $items.find('img.product-thumb').addClass('x-image-thumbnail');
+            return $items;
+        },
+        'noResultsMsg': function(context) {
+            var $content = context.data('container');
+            if(context.data('list').length || $content.children().length)
+                return false;
+
+            return $.trim(context.data('container').text().replace(/\"(.*)\"/g,'&ldquo;<strong>$1</strong>&rdquo;'));
+        },
+        'scripts': function(context) {
+            var $scripts = $('script[x-src*="jquery.livequery.js"],'
+                            +'script[x-src*="searchResults.js"],'
+                            +'script[x-src*="common.js"]');
+            return _combineScripts($scripts);
+        }
+    },
+    {
+        // Checkout pages
+        'templateName': 'cart',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-OrderItemDisplayViewShiptoAssoc')
+                   .add($('#mainarea.mainarea-InvalidInputErrorView:has(form#ShopCartForm)'));
+        },
+        'breadcrumbs': function(context) {
+            return breadcrumbs($('div.breadcrumbs'), true);
+        },
+
+        'form': function(context) {
+            return context.data('container').find('form#ShopCartForm');
+        },
+
+        'cartBanner': function(context) {
+            return mobifyAssets(context, $('.mobify-assets'), context.data('form').prev());
+        },
+        'emptyCart': function(context) {
+            var $container = context.data('container');
+            return $container.find('.boxed-content h1.checkout').nextAll();
+        },
+        'checkoutButton': function(context) {
+            var $btn = context.data('form').find('#checkoutBtn');
+            $btn.html('Proceed to Checkout');
+            $btn.attr('type', 'button');
+            $btn.addClass('x-button x-checkout-button');
+            return $btn;
+        },
+        'itemsSection': function(context) {
+            return context.data('form').find('#itemsSection');
+        },
+        'cartSummary': function(context) {
+            var $cartSummary = context.data('form').find('#orderTotals');
+
+            $cartSummary.find('ul li:has(span)').addClass('x-data-line');
+            return $cartSummary;
+        },
+        'cartTotal': function(context) {
+            var $cartSummary = context.data('cartSummary'),
+                $cartTotal = $cartSummary.find('li.total').remove();
+            return $cartTotal;
+        },
+        'cartSavings': function(context) {
+            var $form = context.data('form'),
+                $cartSavings = $form.find('.cart-you-saved:has(span)').addClass('x-icon x-icon-saved')
+                                .add($form.find('#shoppingCartPagePromo:has(span)').addClass('x-icon x-icon-promo'));
+                $cartSavings.find('span[style]').each(function(){
+                    var $self = $(this);
+                    if($self.css('color'))
+                        $self.addClass('red')
+                    $self.removeAttr('style');
+                });
+            return $cartSavings;
+        },
+        'discount': function(context) {
+            return context.data('cartSummary').find('li.discount span.discount:first-child');
+        },
+        'itemsList': function(context) {
+            return checkoutCart(context.data('form'));
+        },
+        'giftBag': function(context) {
+            var $giftBag = context.data('form').find('.gift-bag-espot'),
+                $items = $giftBag.find('table tbody tr');
+
+            if(!$giftBag.length || !$items.length)
+                return;
+
+            // add image resizing via cloud
+            $items.find('td.photo .prodThumb img').addClass('x-image-icon');
+            // change “Quick View” button text to “Add Item”
+            $items.find('td.add-to-cart .quickview span').text('Add Item');
+
+            return $items.map(function(){2
+                var $_item = $(this);
+                return {
+                    'image': $_item.find('td.photo .prodThumb'),
+                    'title': $_item.find('td:nth-of-type(2)').html(),
+                    'price': $_item.find('td .price'),
+                    'link': $_item.find('td.add-to-cart .quickview')
+                };
+            });
+        },
+        'giftMessage': function(context) {
+            $giftMessage = context.data('form').find('.giftOption');
+            $giftMessage.find('textarea').attr('placeholder', $giftMessage.find('label[for=giftMsg]').text());
+            $giftMessage.find('input').hide();
+            return $giftMessage.find('input, textarea').remove();
+        },
+        'promoCode': function(context) {
+            $promoCode = context.data('form').find('fieldset > .promo').remove();
+            if(!$promoCode.length)
+                return;
+            $promoCode.find('fieldset').wrapInner('<div class="x-promo-content" />');
+            $promoCode.find('fieldset input#promo').attr({'placeholder': 'Enter a promo code', 'autocapitalize':'off', 'autocorrect':"off", 'autocomplete':"off", 'spellcheck':"false"});
+            $promoCode.find('fieldset button').addClass('x-button x-dark-button');
+            $promoCode.find('.remove a img').remove();
+            $promoCode.find('.remove a').text('remove').addClass('remove-button');
+            return $promoCode;
+        },
+        'coupons': function(context) {
+            var $coupons = context.data('container').find('#couponWallet'),
+                $couponsForm = $coupons.find('form#manageCoupons'),
+                $couponsTable = $couponsForm.find('table#couponWalletTable').remove(),
+                $rows =  $couponsTable.find('tbody tr');
+
+            if(!$rows.length)
+                return false;
+
+            $rows.each(function(){
+                $_row = $(this);
+                $_row.find('td.couponWalletTable_expirationDate').prepend($('<span class="x-cell-head">').html('Expires on '));
+                $_row.find('td.couponWalletTable_buttonColumn').prependTo($_row);
+            });
+
+            // Style buttons
+            $couponsTable.find('a.button').addClass('x-button x-small-button');
+            $couponsTable.find('a.button:not(.remove)').addClass('x-action-button');
+
+
+            // We cant have form nested inside another (cart) form, so let's split the coupons form and table
+            return {
+                'form': $couponsForm.hide(),
+                'table': $couponsTable
+            };
+        },
+
+        'cartHiddenFields': function(context) {
+            return context.data('form').find('input[type=hidden]').remove();
+        },
+        'cartErrors': function(context) {
+            return $('#errorList');
+        },
+        'recommendedProducts': function(context) {
+            var $container = $('#mainarea .product-list'),
+                $products = $container.find('.inner > ul > li');
+            if(!$products.length)
+                return false;
+
+            $products.parent().replaceWith(productsCarousel(context, $products, 2));
+            return $container;
+        },
+        'scripts': function(context) {
+            var $scripts = $('script[x-src*="jquery.livequery.js"],'
+                            +'script[x-src*="jquery.inventory.js"],'
+                            +'script[x-src*="jquery.ajaxForm.js"],'
+                            +'script[x-src*="jquery.toggleSpinner.js"],'
+                            +'script[x-src*="jquery.quickview.js"],'
+                            +'script[x-src*="common.js"],'
+                            +'script[x-src*="rewards.js"]')
+                        .add($('script:contains("ismaxlength")'));
+
+            return _combineScripts($scripts);
+        }
+    },
+    {
+        // Login, Register and Forgot password pages
+        'templateName': 'signIn',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-ForgotPassword,'
+                    +'#mainarea.mainarea-CheckoutSignInView,'
+                    +'#mainarea.mainarea-LogonForm,'
+                    +'#mainarea.mainarea-ResetPasswordRegisterErrorView,'
+                    +'#mainarea.mainarea-ResetPasswordForm');
+        },
+        '!form': function(context) {
+            return context.data('container').find('form[name="Register"], form[name="Logon"], form[name="ResetPasswordForm"]');
+        },
+        '__cleanup': function(context) {
+            var $container = context.data('container');
+            $container.find('#registrationPageEspot').remove();
+        },
+        'title': function(context) {
+            return context.data('container').find('h1').remove();
+        },
+        'tabs': function(context) {
+            var $container = context.data('container'),
+                $tabs = $container.find('.rounded-box > h3');
+            return $tabs.map(function(){
+                return {
+                    'title': $(this).text().replace(/I'm a(n?)\s/i,''),
+                    'id': $(this).parent().attr('id')
+                }
+            });
+        },
+        '__resetProgress': function(context) {
+            // Set all progres bar items inactive in checkout flow
+            var $progressBar = context.data('header.progressBar');
+            $progressBar.find('li.active').removeClass('active');
+        },
+        '__formLayout': function(context) {
+            var $container = context.data('container'),
+                $form =  context.data('form'),
+                $labels = $form.find('label');
+
+            // Set labels as placeholders
+            $labels.each(function(){
+                var $label = $(this),
+                    $input = $form.find('input#'+$(this).attr('for')),
+                    type = $input.attr('type');
+
+                if(type == 'text' || type == 'password') {
+                    $label.parent();
+                    $label.remove();
+                    $input.attr('placeholder', $label.text().replace(/\:|\*/g,''));
+                }
+
+            });
+
+            // Fix field types
+            $form.find('input[type=text][name*="email"]').attr('type','email');
+
+            // Primary button
+            $form.find('button[type=submit]').addClass('x-primary-button');
+
+            // Secondary buttons
+            $container.find('#newCustomerRegister .button, #continueLogon').addClass('x-button x-primary-button');
+            $container.find('#newCustomerRegister .button span:contains("Continue")').text('Continue to Registration');
+            $form.find('.forgot-password').addClass('x-button x-small-button').insertAfter($form.find('button[type=submit]'));
+
+            // Put validation errors into Login tab
+            $container.find('#errorList').prependTo($container.find('#logonForm'));
+        },
+        '__redirectURL': function(context) {
+            // Perform only on regular login page, not in checkout flow
+            if(!context.data('header.navmenu').length)
+                return;
+
+            var URL = '/',
+                referrer =document.referrer;
+
+            // Check if user came from Perfumania site and not from the user sections like Register page etc.
+            if(referrer && /^http[s?]:\/\/(www.)?perfumania.com/.test(referrer) && !/\/user\//.test(referrer))
+                URL = referrer.replace(/^(?:\/\/|[^\/]+)*/, ""); // create relative URL
+
+            context.data('container').find('form[name="Logon"] input[name="URL"]').val(URL);
+        }
+    },
+    {
+        // Register and Billing/Shipping Address pages
+        'templateName': 'signUp',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-UserRegistrationForm, #mainarea.mainarea-UserRegistrationErrorView, #mainarea.mainarea-OrderAddressUpdateView');
+        },
+        '__cleanup': function(context) {
+            var $container = context.data('container');
+            $container.find('#registrationPageEspot, #regRequiredFields, h3[title*="Registration"]').remove();
+        },
+        'title': function(context) {
+            return $('#mainarea.mainarea-UserRegistrationForm, #mainarea.mainarea-UserRegistrationErrorView').find('h1').remove();
+        },
+        'form': function(context) {
+            return context.data('container').find('form:has(fieldset)').addClass('x-address-form');
+        },
+        'error': function(context) {
+            return context.data('container').find('#errorList');
+        },
+        'rewardOption': function(context) {
+            var $form = context.data('form'),
+                $rewardsOption = $form.find('#registrationRewards').remove();
+
+            // Change lable text and fix for bug they have on desktop site
+            $rewardsOption.find('label').text('Sign up for Rewards Program').attr('for', 'receiveRewards');
+
+            if($rewardsOption.length)
+                return {
+                    'title': 'Perfumania Rewards',
+                    'teaser': $rewardsOption.find('ul:first-child').remove().find('li.receiveRewards *'),
+                    'content': $rewardsOption
+                };
+        },
+        'subscribeOption': function(context) {
+            var $form = context.data('form'),
+                $subscribeOption = $form.find('#userInfo .receiveEmail, .checkbox.send-me-email').remove(),
+                $content = $subscribeOption.find('p.note').length ? $subscribeOption.find('p.note').remove() : $subscribeOption.find('label').text();
+
+            if($subscribeOption.length)
+                return {
+                    'title': 'Perfumania Exclusives & Promotions',
+                    'teaser': $subscribeOption.find('*'),
+                    'content': $content
+                };
+        },
+
+        'ajaxUpdateURL': function(context) {
+            return context.data('container').find('#ajaxUpdateURL').remove();
+        },
+        'backButton': function(context) {
+            return context.data('form').find('a.back-button').remove().addClass('x-back-button');
+        },
+        'submitButton': function(context) {
+            $('#registrationForm').find('button[type=submit]').text('Create Account');
+            return context.data('form').find('button[type=submit]').remove().addClass('x-primary-button');
+        },
+        '__formLayout': function(context) {
+            var $form = context.data('form'),
+                OS = context.data('OS');
+
+            // NOTE: some additional transforamtions made in signUp.tmpl to apply both on page load and on AJAX form refresh
+            // (e.g. when selecting saved address on checkout Billing/Shipping address).
+
+            // Add class to saved address dropdowns
+            $form.find('ul.remove-default:has(#saddress, #baddress)').addClass('x-saved-address')
+            var $datepicker = $form.find('#datepicker');
+
+            // Change label format hint for Androids that use it as a placeholder
+            $form.find('span#date').text('MM/DD/YYYY\n\n').clone().hide().prependTo($form.find('span#date').parent());
+
+            if((OS.name == 'ios' && OS.version > 4)) {
+                // iOS4 and below do not support datepicker
+                // Android 4.x has issues with onchange events ondatepicker or changing its value causes page to freeze
+                // So use it only for iOS 5+
+                // Make birthday field hidden and show date picker instead
+                if($datepicker.length) {
+                    dateVal = $datepicker.val().replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/, '$3-$1-$2')
+                    $datepicker.before('<input type="date" id="x-datepicker" placeholder="yyyy-mm-dd" value="'+dateVal+'" onchange="Mobify.$(\'#datepicker\').val(this.value.replace(/(\\d{4})-(\\d{1,2})-(\\d{1,2})/, \'$2/$3/$1\'));" />');
+                    $form.find('label[for=datepicker]').attr('for','x-datepicker');
+                    $form.find('span#date').hide();
+                    $datepicker.hide();
+                }
+            } else {
+                // Keep using input[type='text'] instead of 'number' due to a) desktop site validation script issues b) slash symbol missing on some devices numeric keyboards
+                $datepicker.attr({'placeholder': 'MM/dd/yyyy'});
+            }
+
+            // Make labels clickable
+            $form.find('#additionalInfo').find('span.gender').each(function(){
+                var $self = $(this),
+                    $input = $self.prev('input[type=radio]'),
+                    id = $input.attr('name')+$input.val();
+
+                $input.attr('id',id);
+                $self.wrap('<label for="'+id+'" />');
+            });
+
+            // Remove colons from headers
+            $form.find('h3').each(function(){
+                $(this).text($(this).text().replace(':',''));
+            });
+        },
+        '__redirectURL': function(context) {
+            // Perform only on regular login page, not in checkout flow
+            if(!context.data('header.navmenu').length)
+                return;
+
+            context.data('container').find('form#registrationForm input[name="URL"]').val('/');
+            //context.data('container').find('form#registrationForm input[name="page"]').val('/');
+        },
+        'billingSection': function(context) {
+            var $form = context.data('form');
+            if($form.find('#billingSection').length) {
+                if($form.find('#oldFirstName').val().length==0)
+                    $form.find('#sameAsShipping').attr('checked',true);
+
+                return {
+                    'title': $form.find('#billingAddr h3').remove(),
+                    'switcher': $form.find('#sameAsBillingContainer').remove(),
+                    'content': $form.find('#billingSection').remove(),
+                    'expanded': !$form.find('#sameAsShipping').attr('checked')
+                };
+            }
+        },
+        'scripts': function(context) {
+            var $scripts = $('script[x-src*="states.js"],'
+                            +'script[x-src*="shipAddr.js"]');
+
+            return _combineScripts($scripts);
+        }
+    },
+    {
+        // Register and Billing/Shipping Address pages
+        'templateName': 'shipping',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-OrderShipModeUpdateView');
+        },
+        'title': function(context) {
+            return context.data('container').find('h1').remove();
+        },
+        'form': function(context) {
+            return context.data('container').find('form:has(.shipModeArea)');
+        },
+        'address': function(context) {
+            return checkoutAddress(context.data('form'));
+        },
+        'hidedenFields': function(context) {
+            return context.data('form').find('input[type=hidden]').remove();
+        },
+        'backButton': function(context) {
+            return context.data('form').find('a.back-button').remove().first().addClass('x-back-button');
+        },
+        'submitButton': function(context) {
+            context.data('form').find('button[type=submit]').text('Continue to Checkout');
+            return context.data('form').find('button[type=submit]').remove().first().addClass('x-primary-button');
+        },
+        'assistance': function(context) {
+            return mobifyAssets(context, $('.mobify-assets'), context.data('form').find('.orderAddrSection > div[style]').remove()).addClass('x-assistance');
+        },
+        '__formLayout': function(context) {
+            var $form = context.data('form');
+            $form.find('.shipModeSelection')
+                 .addClass('x-shipping-methods')
+                 .find('h3').remove();
+
+            if( !$form.find('.shipModeSelection input[type=radio][checked]').length) {
+                $form.find('.shipModeSelection input[type=radio]').first().attr('checked', true);
+            }
+
+        }
+    },
+    {
+        // Payment page
+        'templateName': 'payment',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-OrderPaymentUpdateView');
+        },
+        'title': function(context) {
+            return context.data('container').find('h1').remove();
+        },
+        'form': function(context) {
+            return context.data('container').find('form#paymentForm');
+        },
+        'error': function(context) {
+            return context.data('container').find('#errorList');
+        },
+        'address': function(context) {
+            return checkoutAddress(context.data('form'));
+        },
+        'assistance': function(context) {
+            return mobifyAssets(context, $('.mobify-assets'), context.data('form').find('.shipModeEspots').remove().find('div')).addClass('x-assistance');
+        },
+        'shippingMethod': function(context) {
+            return $('.orderAddrSection').remove()
+                        .find('.shipMethodDisplayContainer')
+                            .map(function(){
+                                var $self = $(this);
+                                return {
+                                    'class': 'x-shipping-method',
+                                    'title': $self.find('h3').text(),
+                                    'content': $self.find('ul'),
+                                    'edit': $self.find('a.button').addClass('x-button x-small-button')
+                                };
+                            });
+        },
+        'hidedenFields': function(context) {
+            return context.data('form').find('input[type=hidden]').remove();
+        },
+        'backButton': function(context) {
+            return context.data('form').find('a.back-button').remove().first().addClass('x-back-button');
+        },
+        'submitButton': function(context) {
+            return context.data('form').find('button[type=submit]').remove().first().addClass('x-primary-button');
+        },
+        'giftCard': function(context) {
+            return context.data('container').find('#giftCardDiv, #giftCardFields');
+        },
+        'cartSummary': function(context) {
+            var $cartSummary = context.data('form').find('#orderTotals');
+
+            $cartSummary.find('ul li:has(span)').addClass('x-data-line');
+            return $cartSummary;
+        },
+        'cartTotal': function(context) {
+            var $cartSummary = context.data('cartSummary'),
+                $cartTotal = $cartSummary.find('li.total').remove();
+            return $cartTotal;
+        },
+        'discount': function(context) {
+            return context.data('form').find('#orderTotals li span.discount:first-child');
+        },
+        'itemsList': function(context) {
+            return checkoutCart(context.data('form'));
+        },
+        '__formLayout': function(context) {
+            var $form = context.data('form');
+            $form.find('.paymentFormSection')
+                 .addClass('x-payment-form')
+                 .find('h3').remove();
+
+            $form.find('label').contents()
+                .filter(function(){
+                    return this.nodeType === 3 && $.trim(this.nodeValue) !== '';
+                })
+                .each(function(){
+                    $(this).text($(this).text().replace(':',''));
+                });
+
+            // Add columns layout to expiration date
+            $form.find('#cardExpiryMonth, #cardExpiryYear, #securityCode, #securityCodeInfo').wrap('<div class="x-half"/>');
+            $form.find('.x-half:has(#cardExpiryYear, #securityCodeInfo)').addClass('x-last').after('<div class="x-clearfix"/>');
+
+            // Fix input type
+            $form.find('input#cardNumber, input#securityCode').attr('type','tel');
+
+            //Fix checkbox layout
+            $form.find('li.savecc:has(#savecc)')
+                    .addClass('x-input-group')
+                    .prepend($form.find('#savecc'));
+
+            // Better placing for validation errors
+            $form.find('.formError').each(function(){
+                var $self = Mobify.$(this);
+                // Show validation errors after the labels
+                $self.find('.errorMsg').insertAfter($self.find('label'));
+            })
+
+            $form.find('#itemsSection').remove()
+        },
+        'scripts': function(context) {
+            var $scripts = $('script[x-src*="paySelect.js"],'
+                            +'script[x-src*="giftCard.js"],'
+                            +'script[x-src*="jquery.livequery.js"],'
+                            +'script[x-src*="common.js"]');
+
+            return _combineScripts($scripts);
+        }
+    },
+    {
+        // Checkout Thank You page
+        'templateName': 'checkout',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-OrderOKView');
+        },
+        '__tracking': function(context) {
+            // Purchase tracking for Mobify
+            var $container = context.data('container'),
+                $summary = $container.find('#orderTotals'),
+
+                orderId = $container.find('h1.order-confirmation .order-number').text(),
+                total = $summary.find('.total .totalAmount').text().replace(/[^\d|\.]/g,''),
+                tax = $summary.find('.taxCombined .amount').text().replace(/[^\d|\.]/g,''),
+                shipping = $summary.find('li span.label:contains("Shipping")').next('span.amount').text().replace(/[^\d|\.]/g,'');
+
+                var analytics = Mobify.analytics = Mobify.analytics || {ga: []};
+                analytics.ga.push(["_addTrans", orderId, 'Perfumania', total, tax, shipping], ["_trackTrans"]);
+         },
+         'commissionJunction': function(context) {
+            return $('img[x-height="1"][x-width="20"]');
+         },
+        'breadcrumbs': function(context) {
+            return static_breadcrumbs('Checkout');
+        },
+        'title': function(context) {
+            return context.data('container').find('h1.order-confirmation').remove();
+        },
+        'thankYou': function(context) {
+            return mobifyAssets(context, $('.mobify-assets'), context.data('container').find('a:has(img[x-src*="espot_order_confirmation.gif"])'));
+        },
+        '__paymentInfoLayout': function(context) {
+            // make values bold
+            context.data('container').find('.payment-info ul li').contents()
+                    .filter(function(){
+                        return this.nodeType === 3 && $.trim(this.nodeValue) !== '';
+                    })
+                    .each(function(){
+                        $(this).parent('li').html($.trim(this.nodeValue.replace(/(\s\s|\r\n|\n|\r)/gm,"").replace(/:(.*)$/g,': <strong>$1</strong>')));
+                    });
+        },
+        'summaryInfoBlocks': function(context) {
+            // Define order
+            var $summaryInfoBlocks = $('.payment-info')
+                                .add($('.order-address'))
+                                .add($('.shipping-method'))
+                                .add($('.billing-address'));
+
+            return $summaryInfoBlocks.map(function(){
+                        var $self = $(this);
+                        return {
+                            'class': 'x-'+$self.attr('class'),
+                            'title': $self.find('h4').remove().text(),
+                            'content': $self.find('ul')
+                        };
+                    });
+        },
+        'cartSummary': function(context) {
+            var $cartSummary = context.data('container').find('#orderTotals');
+
+            $cartSummary.find('ul li:has(span)').addClass('x-data-line');
+            return $cartSummary;
+        },
+        'cartTotal': function(context) {
+            var $cartSummary = context.data('cartSummary'),
+                $cartTotal = $cartSummary.find('li.total').remove();
+            return $cartTotal;
+        },
+        'discount': function(context) {
+            return context.data('container').find('#orderTotals li span.discount:first-child');
+        },
+        'itemsList': function(context) {
+            context.data('container').find('#itemsSection table input[type=hidden]').remove();
+            return checkoutCart(context.data('container'));
+        }
+    },
+    {
+        // Register and Billing/Shipping Address pages
+        'templateName': 'error',
+        '!container': function(context) {
+            return $('#mainarea.mainarea-ReLogonFormView, #mainarea.mainarea-GenericSystemError, #mainarea.mainarea-GenericApplicationError');
+        },
+        'content': function(context) {
+            return context.data('container').find('.boxed-content');
+        },
+        '__layout': function(context) {
+            context.data('content').find('.button').addClass('x-button x-primary-button');
+        }
+    })
+},
+
+'_optimizeImages': function(context) {
+    // automatically resize images for simple outputs
+    _resizeImages(context, $('body'));
+    _lazyLoad($('img.x-lazy'));
+},
+'requiredScripts': function(context) {
+    var $scripts = $('script[x-src*="jquery.min.js"], script[x-src*="jquery.colorbox-min.js"]').remove();
+    return _combineScripts($scripts);
+},
+'tracking': function(context) {
+    // Include tracking only on production due to errors in Marin Track and Media Forge tag on staging domains
+    //if(!ProductionEnv)
+      //  return false;
+
+    var $scripts = $('script:contains("conversion")')
+                    .add($('script[x-src*="conversion"]'))
+
+                    //Google
+                    .add($('script[x-src*="urchin.js"]'))
+                    .add($('script:contains("_uacct")'))
+                    .add($('form[name=utmform]'))
+                    .add($('script:contains("__utmSetTrans")'))
+                    .add($('script:contains("google_conversion")'))
+
+                    // Google Analytics Cart
+                    .add($('script:contains("gaJsHost")'))
+                    .add($('script:contains("pageTracker")'))
+
+
+                    // Bizrate
+                     .add($('script[x-src*="bizrate"]'))
+
+
+                    // Marin Track
+                    .add($('script:contains("_marinClientId")'))
+                    .add($('script:contains("_marinTrack")'))
+                    .add($('img[x-src*="tracker.marinsm.com"]'))
+
+
+                    // BOGUS URL
+                    .add($('img[x-src*="bogusurl.com"]'))
+
+                    // COMISSION JUCTION
+                    // see checkout.commissionJunction
+
+                    // NEXTAG
+                    .add($('script:contains("var order")'))
+                    .add($('script[x-src*="nextag.com"]'))
+
+                    // ConversionTrack
+                    .add($('script:contains("pd.ed10.net")'))
+
+                    // Pricegrabber
+                    .add($('img[x-src*="www.bogusurl.com/conversion.php"]'))
+                    .add($('script:contains("popup_order_number")'))
+                    .add($('script[x-src*="pricegrabber.com"]'))
+
+                    // Media Forge
+                    .add($('script[x-src*="tags.mediaforge.com"]'))
+
+                    .remove();
+    return $scripts;
+},
+'script': function(context) {
+    return $('script').remove()
+},
+
+'stylesheet': function(context) {
+    return $('link[rel="stylesheet"]').remove()
+},
+
+'OUTPUTHTML': function(context) {
+    if(context.data('unmobify'))
+        return false;
+
+    var templateName = context.data('content.templateName');
+    if (templateName) {
+        return context.tmpl(templateName);
+    }
+}
+
+} {/konf}

@@ -1,0 +1,34 @@
+{>root/}
+
+{<main}
+	{#content}
+		{title}
+
+		{form|openTag|s}
+			{hidedenFields}
+			
+			{form|innerHTML|s}
+
+			{#address}
+				{>_cartAddress/}
+			{/address}
+
+			{submitButton}
+			{backButton}
+
+			{assistance}
+
+		{form|closeTag|s}
+		<hr/>
+	{/content}
+{/main}
+
+{<scripts}
+	{_SUPER_}
+	{content.scripts}
+	{%script}
+	 	(function($) {
+
+	 	})(Mobify.$);
+	{/script}
+{/scripts}

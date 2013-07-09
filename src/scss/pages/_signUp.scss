@@ -1,0 +1,131 @@
+.x-signUp {
+
+    label {
+        font-size: $text;
+        br {
+            display: none;
+        }
+        #date {
+            color: $med;
+            font-weight: normal;
+        }
+    }
+
+	fieldset {
+		margin-bottom: $block-margin;
+
+        h3 {
+            font-size: $xlarge-text;
+        }
+
+        ul {
+            @extend .x-form-row;
+            li.x-half {
+                margin-top: 0;
+            }
+        }
+
+        select {
+            width: 100%;
+        }
+
+        input[type=radio] {
+            top: 0;
+        }
+
+        // Saved  address dropdown
+        .x-saved-address {
+            li {
+                margin-top:$margin;
+            }
+            select {
+                font-size: $text+1;
+            }
+        }
+        
+        .formError {
+            label {
+                color: $ximportant;
+            }
+            input {
+                border-color: $ximportant;
+            }
+            input::-webkit-input-placeholder {
+                color: $ximportant;
+            }
+        }
+
+        #genderF {
+            margin-left:-4px;
+        }
+        input#genderF {
+            margin-left: 2px;
+        }
+        label[for=genderF] {
+            margin-right:4%;
+        }
+
+        .fragrance_input {
+            margin:0;
+            label[for*=frag2],
+            label[for*=frag3] {
+                display: none;
+            }
+        }
+    }
+
+    // Reward options
+    .x-block-accordion.x-reward-option {
+        border-color: #db74a1;
+        > .m-item > .m-header {
+            @include background-image(linear-gradient($xrewardlight, $xrewarddark));
+            @include text-shadow(0 1px 0 darken($xrewarddark, 10%));
+        }
+        #registrationRewards a {
+            color: $xrewarddark;
+        }
+        .m-content {
+            br {
+                content: ' ';
+                &:after {
+                    content: ' ';
+                }
+            }
+        }
+    }
+
+    .x-check-accordion.x-billing-address {
+        .m-item .m-header:before {
+            @include x-icon-cross;
+        }
+        .m-item.m-opened .m-header:before {
+            content:'';
+        }
+        .m-inner-content {
+            @include extra-block;
+            margin-bottom: 0;
+        }
+
+        #billingAddr {
+            display: block !important;
+
+            h3 {
+                margin:$margin 0 0;
+            }
+        }
+    }
+
+    .x-main-field {
+        padding: $margin/2 $margin $margin/2 $margin*4;
+        input[type=checkbox] {
+            float: left;
+            margin-left: -$margin*3;
+            margin-top: $margin - 3;
+        }
+        label {
+            color: $dark;
+            line-height: 1.3;
+            padding-left: $margin - 2;
+        }
+    }
+}
